@@ -1,0 +1,4 @@
+kode,produk,harga,kategori,kelola stok,stok,dijual?,satuan
+kue,kue,1000,makanan,y,10,y,pcs
+kopi,kopi,5000,minuman,n,,y,
+gula,gula,10000,bahan baku,n,,n,kg

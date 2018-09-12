@@ -1,0 +1,16 @@
+----------------------------------------------------------------
+Wed Feb 21 07:24:23 WIB 2018:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.11.1.2 - (1629631): instance a816c00e-0161-b5bf-383b-ffffc2ba6389 
+on database directory /home/arvita/NetBeansProjects/Kiraju3/kiraju with class loader sun.misc.Launcher$AppClassLoader@55f96302 
+Loaded from file:/home/arvita/NetBeansProjects/Kiraju3/dist/run237879538/lib/derby.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_151-b12
+user.dir=/home/arvita/NetBeansProjects/Kiraju3
+os.name=Linux
+os.arch=amd64
+os.version=4.10.0-42-generic
+derby.system.home=/home/arvita/NetBeansProjects/Kiraju3
+Database Class Loader started - derby.database.classpath=''
+----------------------------------------------------------------
+Wed Feb 21 07:26:10 WIB 2018:
+Shutting down instance a816c00e-0161-b5bf-383b-ffffc2ba6389 on database directory /home/arvita/NetBeansProjects/Kiraju3/kiraju with class loader sun.misc.Launcher$AppClassLoader@55f96302 
