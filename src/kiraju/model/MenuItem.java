@@ -32,6 +32,7 @@ public class MenuItem  implements java.io.Serializable {
      
      //20180912 - kiraju3 plus
      private Satuan satuan;
+     private Set<Pesan> pesan = new HashSet<>(0);
 
     public MenuItem() {
     }
@@ -162,6 +163,14 @@ public class MenuItem  implements java.io.Serializable {
 
     public void setSatuan(Satuan satuan) {
         this.satuan = satuan;
+    }
+
+    public Set<Pesan> getPesan() {
+        return pesan;
+    }
+
+    public void setPesan(Set<Pesan> pesan) {
+        this.pesan = pesan;
     }
 
 

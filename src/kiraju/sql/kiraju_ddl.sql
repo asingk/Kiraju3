@@ -365,6 +365,24 @@ INSERT INTO APP.MEJA (ID, STATUS, NOMOR)
 INSERT INTO APP.MEJA (ID, STATUS, NOMOR) 
 	VALUES (100, 0, '100');
 
+---------------------------
+-- DML STATEMENT FOR SATUAN
+---------------------------
+INSERT INTO APP.SATUAN (CODE, NAMA)
+        VALUES ('pcs', 'pieces');
+INSERT INTO APP.SATUAN (CODE, NAMA)
+        VALUES ('kg', 'kilogram');
+INSERT INTO APP.SATUAN (CODE, NAMA)
+        VALUES ('L', 'liter');
+INSERT INTO APP.SATUAN (CODE, NAMA)
+        VALUES ('ons', 'ons');
+INSERT INTO APP.SATUAN (CODE, NAMA)
+        VALUES ('g', 'gram');
+INSERT INTO APP.SATUAN (CODE, NAMA)
+        VALUES ('mL', 'mililiter');
+INSERT INTO APP.SATUAN (CODE, NAMA)
+        VALUES ('dus', 'kardus');
+
 --for trial version only
 -- INSERT INTO APP.DISKON (ID, TIPE, BILANGAN, STATUS, NAMA) 
 -- 	VALUES (1, 2, 20, true, 'diskon 20%');

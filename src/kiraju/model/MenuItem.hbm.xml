@@ -50,5 +50,11 @@
     <property name="status" type="java.lang.Boolean">
       <column name="STATUS"/>
     </property>
+    <set cascade="delete-orphan" name="pesan" table="PESAN">
+      <key>
+        <column name="MENU_ITEM_CODE" not-null="true"/>
+      </key>
+      <one-to-many class="kiraju.model.Pesan"/>
+    </set>
   </class>
 </hibernate-mapping>

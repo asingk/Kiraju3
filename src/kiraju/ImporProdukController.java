@@ -123,11 +123,10 @@ public class ImporProdukController implements Initializable {
 //                    }else{
 //                        menuItem.setIsJual(false);
 //                    }
-                    List<String> satuanList = iSatuan.getCodeList();
-//                    String satuanCode = menu[7];
-                    if(menu.length > 7 && satuanList.contains(menu[7])){
-                        menuItem.setSatuan(new Satuan(menu[7]));
-                    }
+//                    List<String> satuanList = iSatuan.getCodeList();
+//                    if(menu.length > 7 && satuanList.contains(menu[7])){
+//                        menuItem.setSatuan(new Satuan(menu[7]));
+//                    }
                     if(null != menuItem.getNama()){
                         if(iMenuItem.impor(menuItem)){
                             suksesCount++;
