@@ -6,12 +6,6 @@
 package kiraju.implement;
 
 import java.util.List;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import kiraju.interfaces.IGeneral;
-import kiraju.model.Diskon;
-import kiraju.model.General;
-import kiraju.property.DiskonPajakProperty;
 import kiraju.util.HibernateUtil;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
@@ -19,26 +13,27 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.criterion.Order;
+import kiraju.interfaces.IUmum;
+import kiraju.model.Umum;
 
 /**
  *
  * @author arvita
  */
-public class GeneralModel implements IGeneral{
+public class UmumModel implements IUmum{
     
-    private final static Logger LOGGER = Logger.getLogger(GeneralModel.class);
+    private final static Logger LOGGER = Logger.getLogger(UmumModel.class);
 
     @Override
-    public General getGeneral() {
-        General general = new General();
+    public Umum getUmum() {
+        Umum umum = new Umum();
         Session session = HibernateUtil.getSessionFactory().openSession();
         try {
             Transaction tx = session.beginTransaction();
-            Criteria criteria = session.createCriteria(General.class);
-            List<General> resultList = criteria.list();
+            Criteria criteria = session.createCriteria(Umum.class);
+            List<Umum> resultList = criteria.list();
             if(null != resultList && !resultList.isEmpty()) {
-                general = resultList.get(0);
+                umum = resultList.get(0);
             }
             tx.commit();
         } catch (HibernateException e) {
@@ -46,17 +41,17 @@ public class GeneralModel implements IGeneral{
         } finally {
             session.close();
         }
-        return general;
+        return umum;
     }
 
     @Override
-    public void update(General general) {
+    public void update(Umum umum) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         try {
             Transaction tx = session.beginTransaction();
             Query query = session.createQuery("update General set modeCafe = :modeCafe, printerCode = :printerCode");
-            query.setParameter("modeCafe", general.getModeCafe());
-            query.setParameter("printerCode", general.getPrinterCode());
+            query.setParameter("modeCafe", umum.getModeCafe());
+            query.setParameter("printerCode", umum.getPrinterCode());
             query.executeUpdate();
             tx.commit();
         } catch (HibernateException e) {

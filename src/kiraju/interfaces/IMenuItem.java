@@ -9,6 +9,7 @@ import java.util.List;
 import javafx.collections.ObservableList;
 import javafx.stage.Stage;
 import kiraju.model.MenuItem;
+import kiraju.property.DaftarPembelianProperty;
 import kiraju.property.MenuItemProperty;
 import kiraju.property.PesanProperty;
 import kiraju.property.StokOpnameItemProperty;
@@ -31,9 +32,11 @@ public interface IMenuItem {
     boolean insert(MenuItem menuItem, Stage primaryStage);
     void update(MenuItem menuItem);
     boolean cekStokBayar(ObservableList<PesanProperty> itemObsList, Stage primaryStage);
-    
     ObservableList<MenuItemProperty> getAllProperty(int jenisId);
     ObservableList<MenuItemProperty> getActiveProperty(int jenisId);
+    List<String> searchMenuItemOnPembelian(String userText, ObservableList<DaftarPembelianProperty> items);
+    MenuItem getByNama(String nama);
     void deleteByCode(MenuItem item);
     boolean impor(MenuItem menuItem);
+    List<String> getActiveMenuName();
 }

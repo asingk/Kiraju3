@@ -9,8 +9,8 @@ and open the template in the editor.
 */
 
 .background{
-    -fx-background-color: #0069c0;
+    -fx-background-color: #eeeeee;
 }
 Text{
-    -fx-fill: white;
+    -fx-fill: #7D8C93;
 }

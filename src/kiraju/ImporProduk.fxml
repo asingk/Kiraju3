@@ -15,13 +15,13 @@
    <bottom>
       <ButtonBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
         <buttons>
-          <Button mnemonicParsing="false" onAction="#batalAction" stylesheets="@style/bayarBtn.css" text="Batal" />
-            <Button fx:id="imporBtn" disable="true" mnemonicParsing="false" onAction="#imporAction" stylesheets="@style/bayarBtn.css" text="Impor" />
+          <Button mnemonicParsing="false" onAction="#batalAction" text="Batal" />
+            <Button fx:id="imporBtn" disable="true" mnemonicParsing="false" onAction="#imporAction" text="Impor" />
         </buttons>
       </ButtonBar>
    </bottom>
    <top>
-      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Impor Produk" BorderPane.alignment="CENTER">
+      <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Impor Produk" BorderPane.alignment="CENTER">
          <font>
             <Font size="18.0" />
          </font>

@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="kiraju.BayarController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="kiraju.BayarController">
    <center>
       <GridPane hgap="5.0" vgap="5.0">
         <columnConstraints>
@@ -36,15 +36,15 @@
             <Label focusTraversable="false" text="Metode:" visible="false" GridPane.rowIndex="4" />
             <Label focusTraversable="false" text="Bayar:" />
             <Label focusTraversable="false" text="Pelanggan:" visible="false" GridPane.rowIndex="5" />
-            <Label text="Kembalian:" textFill="RED" GridPane.rowIndex="3" />
+            <Label text="Kembalian:" GridPane.rowIndex="3" />
             <StackPane alignment="CENTER_RIGHT" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <children>
-                  <Text fx:id="jumlahBayar" fill="GREEN" strokeType="OUTSIDE" strokeWidth="0.0" text="Rp 0" />
+                  <Text fx:id="jumlahBayar" strokeType="OUTSIDE" strokeWidth="0.0" text="Rp 0" />
                </children>
             </StackPane>
             <StackPane alignment="CENTER_RIGHT" GridPane.columnIndex="1" GridPane.rowIndex="3">
                <children>
-                  <Text fx:id="kembalian" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="Rp 0" />
+                  <Text fx:id="kembalian" strokeType="OUTSIDE" strokeWidth="0.0" text="Rp 0" />
                </children>
             </StackPane>
             <Label text="Total Harga:" GridPane.rowIndex="2" />

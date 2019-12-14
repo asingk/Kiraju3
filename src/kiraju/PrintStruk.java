@@ -14,9 +14,7 @@ import java.util.Locale;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javax.imageio.ImageIO;
-import kiraju.implement.GeneralModel;
-import kiraju.interfaces.IGeneral;
-import kiraju.model.General;
+import kiraju.implement.UmumModel;
 import kiraju.model.Users;
 import kiraju.property.PesanProperty;
 import kiraju.util.CommonConstant;
@@ -27,6 +25,8 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperPrintManager;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.util.JRLoader;
+import kiraju.interfaces.IUmum;
+import kiraju.model.Umum;
 
 /**
  *
@@ -46,7 +46,7 @@ public class PrintStruk implements Runnable{
     private String diskonNama = "";
     private String pajakNama = "";
     
-    private final IGeneral iGeneral = new GeneralModel();
+    private final IUmum iUmum = new UmumModel();
     
     public PrintStruk(int tunai, Users user, ObservableList<PesanProperty> pesanMenuItemOrderedObsList, Integer totalHargaPesan, String namaMeja, String diskonNama, Integer diskonTotal, String pajakNama, Integer pajakTotal) {
         this.tunai = tunai;
@@ -69,8 +69,8 @@ public class PrintStruk implements Runnable{
         try {
             InputStream logoStream = this.getClass().getResourceAsStream(CommonConstant.LOGO_KEDAI);
             String printer;
-            General general = iGeneral.getGeneral();
-            if(general.getPrinterCode().equalsIgnoreCase("58mm")) {
+            Umum umum = iUmum.getUmum();
+            if(umum.getPrinterCode().equalsIgnoreCase("58mm")) {
                 printer = "reports/bayar_A8_logo.jasper";
             }else{
                 printer = "reports/bayar_A7_logo.jasper";

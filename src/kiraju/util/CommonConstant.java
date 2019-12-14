@@ -49,21 +49,21 @@ public class CommonConstant {
 //    public static final String KEDAI_SYUKRAN_2 = "Kunjungi www.kiraju.com";
     
     //premium version
-    public static final String KEDAI_NAMA = "Kedai Pizza & Pasta";
+    public static final String KEDAI_NAMA = "A.R.B Coffe Shop";
     public static final String KEDAI_SUB_NAMA = "Pizza & Pasta";
-    public static final String KEDAI_ALAMAT1 = "Jl. Prof. Ali Hasyimi, Lamteh, Ulee";
-    public static final String KEDAI_ALAMAT2 = "Kareng, Sp. BPKP, Banda Aceh";
+    public static final String KEDAI_ALAMAT1 = "Jl. Lebe Kader Reje Bukit, Sp. IV";
+    public static final String KEDAI_ALAMAT2 = "Bebesen, Aceh Tengah";
     public static final String KEDAI_ALAMAT3 = "";
     public static final String KEDAI_SYUKRAN_1 = "Terima Kasih";
     public static final String KEDAI_SYUKRAN_2 = "===Powered by Kiraju===";
     
-    public static final String LOGO_KEDAI = "img/kedai_pizza_pasta.jpg";
+    public static final String LOGO_KEDAI = "img/arb-coffee.jpeg";
     
     public static final String ADMIN_MEJA_ACTIVE = "Aktif";
     public static final String ADMIN_MEJA_NON_ACTIVE = "Tidak Aktif";
     public static final String ADMIN_MEJA_HIDDEN = "Tidak Tampak";
     
-    public static final boolean ISPREMIUM = true;
+    public static final boolean ISPREMIUM = false;
     
     //v2 - retail version
     public static final Integer RUPIAH_CODE = 1;
