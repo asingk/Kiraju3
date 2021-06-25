@@ -44,8 +44,9 @@ public class Pemasok  implements java.io.Serializable {
     }
    
     @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pemasok_generator")
-    @SequenceGenerator(name = "pemasok_generator", sequenceName = "pemasok_id")
+    @SequenceGenerator(name = "pemasok_generator", sequenceName = "pemasok_id", allocationSize = 1)
     @Column(name="id", nullable=false)
     public int getId() {
         return this.id;

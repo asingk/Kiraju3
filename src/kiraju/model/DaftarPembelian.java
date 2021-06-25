@@ -49,8 +49,9 @@ public class DaftarPembelian  implements java.io.Serializable {
     }
    
     @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "daftar_pembelian_generator")
-    @SequenceGenerator(name = "daftar_pembelian_generator", sequenceName = "daftar_pembelian_id")
+    @SequenceGenerator(name = "daftar_pembelian_generator", sequenceName = "daftar_pembelian_id", allocationSize = 1)
     @Column(name="id", nullable=false)
     public int getId() {
         return this.id;

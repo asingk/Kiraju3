@@ -17,7 +17,8 @@ import kiraju.model.Posisi;
 import kiraju.model.Users;
 import kiraju.property.UsersProperty;
 import kiraju.util.HibernateUtil;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.JDBCException;
@@ -34,7 +35,7 @@ import org.hibernate.exception.ConstraintViolationException;
  */
 public class UsersModel implements IUsers {
     
-    private final static Logger LOGGER = Logger.getLogger(UsersModel.class);
+    private final static Logger LOGGER = LogManager.getLogger(UsersModel.class);
 
     @Override
     public ObservableList<UsersProperty> getAll() {

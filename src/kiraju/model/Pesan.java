@@ -48,8 +48,9 @@ public class Pesan  implements java.io.Serializable {
     }
    
     @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pesan_generator")
-    @SequenceGenerator(name = "pesan_generator", sequenceName = "pesan_id")    
+    @SequenceGenerator(name = "pesan_generator", sequenceName = "pesan_id", allocationSize = 1)    
     @Column(name="id", nullable=false)
     public int getId() {
         return this.id;

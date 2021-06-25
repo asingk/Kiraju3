@@ -14,7 +14,8 @@ import kiraju.model.StokOpname;
 import kiraju.model.Users;
 import kiraju.property.StokOpnameProperty;
 import kiraju.util.HibernateUtil;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -26,7 +27,7 @@ import org.hibernate.Transaction;
  */
 public class StokOpnameModel implements IStokOpname{
     
-    private final static Logger LOGGER = Logger.getLogger(StokOpnameModel.class);
+    private final static Logger LOGGER = LogManager.getLogger(StokOpnameModel.class);
 
     @Override
     public ObservableList<Integer> getYear() {

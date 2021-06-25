@@ -42,8 +42,9 @@ public class Pajak  implements java.io.Serializable {
     }
    
     @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pajak_generator")
-    @SequenceGenerator(name = "pajak_generator", sequenceName = "pajak_id")
+    @SequenceGenerator(name = "pajak_generator", sequenceName = "pajak_id", allocationSize = 1)
     @Column(name="id", nullable=false)
     public int getId() {
         return this.id;

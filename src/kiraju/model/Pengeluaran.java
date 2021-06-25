@@ -41,8 +41,9 @@ public class Pengeluaran  implements java.io.Serializable {
     }
    
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pengeluaran_generator")
-    @SequenceGenerator(name = "pengeluaran_generator", sequenceName = "pengeluaran_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pengeluaran_generator")
+//    @SequenceGenerator(name = "pengeluaran_generator", sequenceName = "pengeluaran_id")
     @Column(name="ID", nullable=false)
     public int getId() {
         return this.id;

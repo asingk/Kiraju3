@@ -48,8 +48,9 @@ public class Absensi  implements java.io.Serializable {
     }
    
     @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "absensi_generator")
-    @SequenceGenerator(name = "absensi_generator", sequenceName = "absensi_id")
+    @SequenceGenerator(name = "absensi_generator", sequenceName = "absensi_id", allocationSize = 1)
     @Column(name="id", nullable=false)
     public int getId() {
         return this.id;

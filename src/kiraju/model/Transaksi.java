@@ -71,8 +71,9 @@ public class Transaksi  implements java.io.Serializable {
     }
    
     @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "transaksi_generator")
-    @SequenceGenerator(name = "transaksi_generator", sequenceName = "transaksi_id")
+    @SequenceGenerator(name = "transaksi_generator", sequenceName = "transaksi_id", allocationSize = 1)
     @Column(name="id", nullable=false)
     public int getId() {
         return this.id;

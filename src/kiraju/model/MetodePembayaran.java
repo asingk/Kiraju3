@@ -38,8 +38,9 @@ public class MetodePembayaran  implements java.io.Serializable {
     }
    
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "metode_pembayaran_generator")
-    @SequenceGenerator(name = "metode_pembayaran_generator", sequenceName = "metode_pembayaran_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "metode_pembayaran_generator")
+//    @SequenceGenerator(name = "metode_pembayaran_generator", sequenceName = "metode_pembayaran_id")
     @Column(name="id", nullable=false)
     public int getId() {
         return this.id;

@@ -48,8 +48,9 @@ public class StokOpnameItem  implements java.io.Serializable {
     }
    
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "stok_opname_item_generator")
-    @SequenceGenerator(name = "stok_opname_item_generator", sequenceName = "stok_opname_item_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "stok_opname_item_generator")
+//    @SequenceGenerator(name = "stok_opname_item_generator", sequenceName = "stok_opname_item_id")
     @Column(name="id", nullable=false)
     public int getId() {
         return this.id;

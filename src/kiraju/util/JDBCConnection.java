@@ -22,7 +22,8 @@ import java.util.Properties;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import org.apache.derby.tools.ij;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 /**
@@ -30,7 +31,7 @@ import org.apache.log4j.Logger;
  * @author arvita
  */
 public class JDBCConnection {
-    private final static Logger LOGGER = Logger.getLogger(JDBCConnection.class);
+    private final static Logger LOGGER = LogManager.getLogger(JDBCConnection.class);
     //for development
     private static final String DRIVER = "org.apache.derby.jdbc.ClientDriver";
     private static final String URL = "jdbc:derby://localhost:1527/kiraju_lite";

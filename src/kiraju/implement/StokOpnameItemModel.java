@@ -16,7 +16,8 @@ import kiraju.model.StokOpnameItem;
 import kiraju.property.StokOpnameItemProperty;
 import kiraju.property.StokOpnameProperty;
 import kiraju.util.HibernateUtil;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -28,7 +29,7 @@ import org.hibernate.Transaction;
  */
 public class StokOpnameItemModel implements IStokOpnameItem{
     
-    private final static Logger LOGGER = Logger.getLogger(StokOpnameItemModel.class);
+    private final static Logger LOGGER = LogManager.getLogger(StokOpnameItemModel.class);
 
     @Override
     public ObservableList<StokOpnameItemProperty> getByStokOpnameId(StokOpnameProperty stokOpnameProperty) {

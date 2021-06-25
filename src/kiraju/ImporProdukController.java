@@ -34,7 +34,8 @@ import kiraju.interfaces.ISatuan;
 import kiraju.model.JenisMenu;
 import kiraju.model.MenuItem;
 import kiraju.model.Satuan;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * FXML Controller class
@@ -43,7 +44,7 @@ import org.apache.log4j.Logger;
  */
 public class ImporProdukController implements Initializable {
     
-    private final static Logger LOGGER = Logger.getLogger(ImporProdukController.class);
+    private final static Logger LOGGER = LogManager.getLogger(ImporProdukController.class);
     
     private Stage dialogStage;
     private File selectedFile;
