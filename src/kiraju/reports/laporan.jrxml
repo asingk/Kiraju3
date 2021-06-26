@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="laporan" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="5f314f7b-a310-49d4-b835-95b620c02954">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<parameter name="cafe" class="java.lang.String"/>
+	<parameter name="tglDari" class="java.util.Date"/>
+	<parameter name="tglSampai" class="java.util.Date"/>
+	<field name="tgl" class="java.util.Date"/>
+	<field name="pemasukan" class="java.lang.Integer"/>
+	<field name="pengeluaran" class="java.lang.Integer"/>
+	<field name="diskon" class="java.lang.Integer"/>
+	<field name="pajak" class="java.lang.Integer"/>
+	<field name="untung" class="java.lang.Integer"/>
+	<field name="pembelian" class="java.lang.Integer"/>
+	<variable name="total_masuk" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{pemasukan}]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="total_pajak" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{pajak}]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="total_beban" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{pengeluaran}]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="total_diskon" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{diskon}]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="total_untung" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{untung}]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="total_pembelian" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{pembelian}]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="50" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="555" height="22" uuid="b7a7d753-60a8-43a5-8ca6-0a1a4a78340a"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Laporan Penjualan Harian " + $P{cafe}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="175" y="22" width="80" height="20" uuid="b4fd6c07-8d79-43a4-b1de-835ec51214b0"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$P{tglDari}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="260" y="22" width="20" height="20" uuid="51ce3710-08e5-4375-8ca0-16343f72b395"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[s/d]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="285" y="22" width="80" height="20" uuid="094257c1-57f9-4d9c-a3c8-94ac704a6689"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$P{tglSampai}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="32">
+			<line>
+				<reportElement x="0" y="25" width="555" height="1" uuid="2e4f8d74-af88-4e5d-b60b-28fc043b7ef1"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="0" width="88" height="20" uuid="1c9f5234-b238-4910-b4e9-2eedada316f4"/>
+				<text><![CDATA[Tanggal]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="93" y="0" width="88" height="20" uuid="e36cd425-cdfa-4f08-ab52-892a141585d6"/>
+				<text><![CDATA[Penjualan]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="279" y="0" width="88" height="20" uuid="e21da2ef-ab79-48d6-94fd-f13b7352a5d0"/>
+				<text><![CDATA[Beban]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="372" y="0" width="88" height="20" uuid="6677c551-1f9c-4b99-9f78-f7b7874a8275"/>
+				<text><![CDATA[Pajak]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="465" y="0" width="88" height="20" uuid="ea552cab-353d-45a6-88d9-11f8b54f21de"/>
+				<text><![CDATA[Laba]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="186" y="0" width="88" height="20" uuid="44a549e3-b494-4dee-91b5-6e1b949ef673"/>
+				<text><![CDATA[Pembelian]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="16" splitType="Stretch">
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="0" y="0" width="88" height="16" uuid="d30d3065-09d7-4ec5-a0a8-ab7cb6fa7f25"/>
+				<textFieldExpression><![CDATA[$F{tgl}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0">
+				<reportElement x="93" y="0" width="88" height="16" uuid="ca1abe4c-5e1c-4064-bdbb-8b8b90fa0a2c"/>
+				<textFieldExpression><![CDATA[$F{pemasukan}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0">
+				<reportElement x="279" y="0" width="88" height="16" uuid="9c137699-2ddb-42fb-8afd-2499c46fff70"/>
+				<textFieldExpression><![CDATA[$F{pengeluaran}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0">
+				<reportElement x="372" y="0" width="88" height="16" uuid="88760da3-3f56-4536-a4e6-4f9e87e0fdc6"/>
+				<textFieldExpression><![CDATA[$F{pajak}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0;-#,##0">
+				<reportElement x="465" y="0" width="88" height="16" uuid="bded0fc8-6a07-4ce7-bc20-353fba5cde1b"/>
+				<textFieldExpression><![CDATA[$F{untung}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0">
+				<reportElement x="186" y="0" width="88" height="16" uuid="f4c9ea6e-395e-4fa2-a9a5-7772df88298a"/>
+				<textFieldExpression><![CDATA[$F{pembelian}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="50">
+			<textField>
+				<reportElement x="229" y="13" width="100" height="20" uuid="3d5ebc53-81bc-4faa-823b-a5ca777a66de"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="39">
+			<line>
+				<reportElement x="0" y="5" width="555" height="1" uuid="22befd1e-d3b9-4ff4-a6f9-f44d1fbbbc3c"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="10" width="88" height="20" uuid="cd1b1e44-f9f4-4627-a802-32c716f8c44e"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total:]]></text>
+			</staticText>
+			<textField pattern="¤ #,##0">
+				<reportElement x="93" y="10" width="88" height="20" uuid="2003e0ae-b1e9-4598-a0e4-4f013492a252"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{total_masuk}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0">
+				<reportElement x="372" y="10" width="88" height="20" uuid="7af85dd7-5509-45eb-aab3-7ce272245ea0"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{total_pajak}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0">
+				<reportElement x="279" y="10" width="88" height="20" uuid="dc2c6612-0564-4952-b572-4ea42cd4c860"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{total_beban}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0;-#,##0">
+				<reportElement x="465" y="10" width="90" height="20" uuid="5d4c7961-3c64-4a38-a9f1-c5c4f2002cd6"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{total_untung}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0">
+				<reportElement x="186" y="10" width="88" height="20" uuid="8d4d4c2f-56af-4a71-9813-358c32dd527a"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{total_pembelian}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

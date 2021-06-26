@@ -20,11 +20,12 @@ import kiraju.model.Transaksi;
 import kiraju.property.PesanProperty;
 import kiraju.util.CommonConstant;
 import kiraju.util.HibernateUtil;
-import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -32,7 +33,7 @@ import org.hibernate.Transaction;
  */
 public class PesanModel implements IPesan{
     
-    private final static Logger LOGGER = Logger.getLogger(PesanModel.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(PesanModel.class);
 
     @Override
     public List<Pesan> getAll() {

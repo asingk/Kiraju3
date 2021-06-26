@@ -16,12 +16,13 @@ import kiraju.interfaces.IMenuItem;
 import kiraju.model.JenisMenu;
 //import kiraju.model.Menu;
 import kiraju.model.MenuItem;
+import kiraju.model.Satuan;
+import kiraju.property.DaftarPembelianProperty;
 import kiraju.property.MenuItemProperty;
 //import kiraju.property.MenuProperty;
 import kiraju.property.PesanProperty;
 import kiraju.property.StokOpnameItemProperty;
 import kiraju.util.HibernateUtil;
-import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.JDBCException;
@@ -31,6 +32,8 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.exception.ConstraintViolationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -38,48 +41,7 @@ import org.hibernate.exception.ConstraintViolationException;
  */
 public class MenuItemModel implements IMenuItem{
     
-    private final static Logger LOGGER = Logger.getLogger(MenuItemModel.class);
-
-//    @Override
-//    public ObservableList<MenuItemProperty> getPropertyByMenuId(int menuId) {
-//        ObservableList<MenuItemProperty> dataProperty = FXCollections.observableArrayList();
-//        Session session = HibernateUtil.getSessionFactory().openSession();
-//        try {
-//            Transaction tx = session.beginTransaction();
-//            Query query = session.createQuery("from MenuItem mi join mi.menuId m where mi.menuId = :menuId");
-//            query.setParameter("menuId", new Menu(menuId));
-//            List<Object[]> obj = query.list();
-//            if(null != obj){
-//                for(Object[] row : obj){
-//                    MenuItem menuItem = (MenuItem) row[0];
-//                    Menu menu = (Menu) row[1];
-//                    MenuItemProperty menuItemProp = new MenuItemProperty();
-//                    MenuProperty menuProp = new MenuProperty();
-//                    menuProp.setId(menu.getId());
-//                    menuProp.setNama(menu.getNama());
-//                    menuItemProp.setNama(menuItem.getNama());
-//                    menuItemProp.setCode(menuItem.getCode());
-//                    menuItemProp.setHargaJual(menuItem.getHargaTotal());
-//                    menuItemProp.setStokFlag(menuItem.getStokFlag());
-//                    if(menuItem.getStokFlag()){
-//                        menuItemProp.setStok(menuItem.getStok().toString());
-//                    }
-////                    menuItemProp.setModal(menuItem.getModal());
-////                    menuItemProp.setUntung(menuItem.getUntung());
-////                    menuItemProp.setUntungCode(menuItem.getUntungCode());
-////                    menuItemProp.setTambahan(menuItem.getTambahan());
-////                    menuItemProp.setTambahanCode(menuItem.getTambahanCode());
-//                    dataProperty.add(menuItemProp);
-//                }
-//            }
-//            tx.commit();
-//        } catch (HibernateException e) {
-//            LOGGER.error("failed to select to database", e);
-//        } finally {
-//            session.close();
-//        }
-//        return dataProperty;
-//    }
+    private final static Logger LOGGER = LoggerFactory.getLogger(MenuItemModel.class);
 
     @Override
     public MenuItem getById(int id) {
@@ -224,36 +186,39 @@ public class MenuItemModel implements IMenuItem{
 
     @Override
     public List<String> searchMenuItemByCodeOnStokOpname(String code, ObservableList<StokOpnameItemProperty> obsList) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
         List<String> data = new ArrayList();
-        try {
-            Transaction tx = session.beginTransaction();
-            Query query = session.createQuery("from MenuItem where code like :code and stokFlag = true and code not in (:list)");
-            List<String> codeList = new ArrayList<>();
-            if(obsList.size() > 0) {
-                for(StokOpnameItemProperty itemProperty : obsList){
-                    codeList.add(itemProperty.getKode());
+        if(code.length()>1) {
+            Session session = HibernateUtil.getSessionFactory().openSession();
+            try {
+                Transaction tx = session.beginTransaction();
+                Query query = session.createQuery("from MenuItem where code like :code and stokFlag = true and code not in (:list)");
+                List<String> codeList = new ArrayList<>();
+                if(obsList.size() > 0) {
+                    for(StokOpnameItemProperty itemProperty : obsList){
+                        codeList.add(itemProperty.getKode());
+                    }
+                }else{
+                    codeList.add("");
                 }
-            }else{
-                codeList.add("");
-            }
-            
-            query.setParameter("code", code.toUpperCase()+"%");
-            query.setParameterList("list", codeList);
-            query.setMaxResults(10);
-            List resultList = query.list();
-            if(null != resultList) {
-                for(Object o : resultList) {
-                    MenuItem menuItem = (MenuItem) o;
-//                    Menu menu = menuItem.getMenuId();
-                    data.add(menuItem.getCode() + " - " + menuItem.getNama());
+
+                query.setParameter("code", code.toUpperCase()+"%");
+                query.setParameterList("list", codeList);
+                query.setMaxResults(10);
+                List resultList = query.list();
+                if(null != resultList) {
+                    for(Object o : resultList) {
+                        MenuItem menuItem = (MenuItem) o;
+    //                    Menu menu = menuItem.getMenuId();
+                        data.add(menuItem.getCode() + " - " + menuItem.getNama());
+                    }
                 }
+                tx.commit();
+            } catch (HibernateException e) {
+                LOGGER.error("failed to select to database", e);
             }
-            tx.commit();
-        } catch (HibernateException e) {
-            LOGGER.error("failed to select to database", e);
+            session.close();
         }
-        session.close();
+        
         return data;
     }
 
@@ -366,17 +331,20 @@ public class MenuItemModel implements IMenuItem{
         Transaction tx;
         try {
             tx = session.beginTransaction();
-            String query = jenisId == 0 ? "from MenuItem m join m.jenisMenuId j where j.status = true order by m.status desc, j.id, m.id" : "from MenuItem m join m.jenisMenuId j where j.status = true and j.id = " + jenisId + " order by m.status desc, j.id, m.id";
+            String query = jenisId == 0 ? "from MenuItem m join m.jenisMenuId j left join m.satuan s where j.status = true  order by m.status desc, j.id, m.id" : "from MenuItem m join m.jenisMenuId j left join m.satuan s where j.status = true and j.id = " + jenisId + " order by m.status desc, j.id, m.id";
             List<Object[]> obj = session.createQuery(query).list();
             if(null != obj){
                 for(Object[] row : obj){
                     MenuItemProperty menuItemProp = new MenuItemProperty();
                     MenuItem menuItem = (MenuItem) row[0];
                     JenisMenu jenisMenu = (JenisMenu) row[1];
+                    Satuan satuan = (Satuan) row[2];
 //                    menuProp.setId(menu.getId());
                     menuItemProp.setNama(menuItem.getNama());
                     menuItemProp.setCode(menuItem.getCode());
-                    menuItemProp.setHargaJual(menuItem.getHargaTotal());
+                    if(null != menuItem.getHargaTotal()) {
+                        menuItemProp.setHargaJual(menuItem.getHargaTotal());
+                    }
 //                    menuProp.setCreatedDate(menu.getCreatedDt());
 //                    menuProp.setUpdatedDate(menu.getUpdatedDt());
 //                    menuProp.setDeletedFlag(menu.getDeletedFlag());
@@ -387,6 +355,11 @@ public class MenuItemModel implements IMenuItem{
                     menuItemProp.setStokFlag(menuItem.getStokFlag());
                     if(menuItem.getStokFlag()){
                         menuItemProp.setStok(menuItem.getStok().toString());
+                    }
+                    menuItemProp.setIsDijual(menuItem.getIsJual());
+                    
+                    if(null != satuan){
+                        menuItemProp.setSatuan(satuan.getCode());
                     }
                     dataProperty.add(menuItemProp);
                 }
@@ -407,7 +380,7 @@ public class MenuItemModel implements IMenuItem{
         Transaction tx;
         try {
             tx = session.beginTransaction();
-            String query = jenisId == 0 ? "from MenuItem m join m.jenisMenuId j where j.status = true and m.status = true order by j.id, m.id" : "from MenuItem m join m.jenisMenuId j where j.status = true and j.id = " + jenisId + " and m.status = true order by j.id, m.id";
+            String query = jenisId == 0 ? "from MenuItem m join m.jenisMenuId j where j.status = true and m.status = true and m.isJual = true order by j.id" : "from MenuItem m join m.jenisMenuId j where j.status = true and j.id = " + jenisId + " and m.status = true and m.isJual = true order by j.id";
             List<Object[]> obj = session.createQuery(query).list();
             if(null != obj){
                 for(Object[] row : obj){
@@ -428,6 +401,67 @@ public class MenuItemModel implements IMenuItem{
         }
         session.close();
         return dataProperty;
+    }
+
+    @Override
+    public List<String> searchMenuItemOnPembelian(String userText, ObservableList<DaftarPembelianProperty> obsList) {
+        List<String> data = new ArrayList();
+        if(userText.length()>1) {
+            Session session = HibernateUtil.getSessionFactory().openSession();
+            try {
+                Transaction tx = session.beginTransaction();
+                Query query = session.createQuery("from MenuItem where (code like :code or lower(nama) like :nama) and code not in (:list)");
+                List<String> codeList = new ArrayList<>();
+                if(obsList.size() > 0) {
+                    for(DaftarPembelianProperty itemProperty : obsList){
+                        codeList.add(itemProperty.getMenuItemCode());
+                    }
+                }else{
+                    codeList.add("");
+                }
+
+                query.setParameter("code", userText.toUpperCase()+"%");
+                query.setParameter("nama", "%"+userText.toLowerCase()+"%");
+                query.setParameterList("list", codeList);
+                query.setMaxResults(10);
+                List resultList = query.list();
+                if(null != resultList) {
+                    for(Object o : resultList) {
+                        MenuItem menuItem = (MenuItem) o;
+    //                    Menu menu = menuItem.getMenuId();
+                        data.add(menuItem.getNama());
+                    }
+                }
+                tx.commit();
+            } catch (HibernateException e) {
+                LOGGER.error("failed to select to database", e);
+            } finally {
+                session.close();
+            }
+        }
+        
+        
+        return data;
+    }
+
+    @Override
+    public MenuItem getByNama(String nama) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        MenuItem menuItem = new MenuItem();
+        try {
+            Transaction tx = session.beginTransaction();
+            Criteria criteria = session.createCriteria(MenuItem.class);
+            criteria.add(Restrictions.eq("nama", nama));
+            List resultList = criteria.list();
+            for(Object o : resultList){
+                menuItem = (MenuItem) o;
+            }
+            tx.commit();
+        } catch (HibernateException e) {
+            LOGGER.error("failed to select to database", e);
+        }
+        session.close();
+        return menuItem;
     }
 
     @Override
@@ -480,6 +514,23 @@ public class MenuItemModel implements IMenuItem{
             session.close();
         }
         return result;
+    }
+
+    @Override
+    public List<String> getActiveMenuName() {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        List resultList = new ArrayList();
+        try {
+            Transaction tx = session.beginTransaction();
+            Query query = session.createQuery("select nama from MenuItem where status = :status order by code");
+            query.setParameter("status", true);
+            resultList = query.list();
+            tx.commit();
+        } catch (HibernateException e) {
+            LOGGER.error("failed to select to database", e);
+        }
+        session.close();
+        return resultList;
     }
     
 }

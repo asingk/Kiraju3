@@ -34,7 +34,8 @@ import kiraju.interfaces.ISatuan;
 import kiraju.model.JenisMenu;
 import kiraju.model.MenuItem;
 import kiraju.model.Satuan;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * FXML Controller class
@@ -43,7 +44,7 @@ import org.apache.log4j.Logger;
  */
 public class ImporProdukController implements Initializable {
     
-    private final static Logger LOGGER = Logger.getLogger(ImporProdukController.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(ImporProdukController.class);
     
     private Stage dialogStage;
     private File selectedFile;
@@ -118,15 +119,15 @@ public class ImporProdukController implements Initializable {
                         menuItem.setJenisMenuId(jenisMenu);
                     }
                     menuItem.setStatus(Boolean.TRUE);
-//                    if(menu.length > 6 && "y".equalsIgnoreCase(menu[6])) {
-//                        menuItem.setIsJual(true);
-//                    }else{
-//                        menuItem.setIsJual(false);
-//                    }
-//                    List<String> satuanList = iSatuan.getCodeList();
-//                    if(menu.length > 7 && satuanList.contains(menu[7])){
-//                        menuItem.setSatuan(new Satuan(menu[7]));
-//                    }
+                    if(menu.length > 6 && "y".equalsIgnoreCase(menu[6])) {
+                        menuItem.setIsJual(true);
+                    }else{
+                        menuItem.setIsJual(false);
+                    }
+                    List<String> satuanList = iSatuan.getCodeList();
+                    if(menu.length > 7 && satuanList.contains(menu[7])){
+                        menuItem.setSatuan(new Satuan(menu[7]));
+                    }
                     if(null != menuItem.getNama()){
                         if(iMenuItem.impor(menuItem)){
                             suksesCount++;

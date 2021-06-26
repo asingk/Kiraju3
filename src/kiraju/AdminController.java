@@ -11,10 +11,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.sql.SQLException;
-import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -30,7 +28,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
@@ -75,19 +72,22 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 import javax.imageio.ImageIO;
 import kiraju.implement.AbsensiModel;
+import kiraju.implement.DaftarPembelianModel;
 import kiraju.implement.DiskonModel;
-import kiraju.implement.GeneralModel;
+import kiraju.implement.UmumModel;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -101,16 +101,19 @@ import kiraju.implement.MenuItemModel;
 import kiraju.implement.MetodePembayaranModel;
 import kiraju.implement.PajakModel;
 import kiraju.implement.PelangganModel;
+import kiraju.implement.PemasokModel;
 import kiraju.implement.PengeluaranModel;
 import kiraju.implement.PesanModel;
 import kiraju.implement.PosisiModel;
+import kiraju.implement.SatuanModel;
 import kiraju.implement.StokOpnameItemModel;
 import kiraju.implement.StokOpnameModel;
 import kiraju.implement.TransaksiModel;
+import kiraju.implement.TransaksiPembelianModel;
 import kiraju.implement.UsersModel;
 import kiraju.interfaces.IAbsensi;
+import kiraju.interfaces.IDaftarPembelian;
 import kiraju.interfaces.IDiskon;
-import kiraju.interfaces.IGeneral;
 import kiraju.interfaces.IJenisMenu;
 import kiraju.interfaces.IMeja;
 //import kiraju.interfaces.IMenu;
@@ -118,16 +121,18 @@ import kiraju.interfaces.IMenuItem;
 import kiraju.interfaces.IMetodePembayaran;
 import kiraju.interfaces.IPajak;
 import kiraju.interfaces.IPelanggan;
+import kiraju.interfaces.IPemasok;
 import kiraju.interfaces.IPengeluaran;
 import kiraju.interfaces.IPesan;
 import kiraju.interfaces.IPosisi;
+import kiraju.interfaces.ISatuan;
 import kiraju.interfaces.IStokOpname;
 import kiraju.interfaces.IStokOpnameItem;
 import kiraju.interfaces.ITransaksi;
+import kiraju.interfaces.ITransaksiPembelian;
 import kiraju.interfaces.IUsers;
 import kiraju.interfaces.IValidation;
 import kiraju.model.Diskon;
-import kiraju.model.General;
 import kiraju.model.JenisMenu;
 import kiraju.model.Meja;
 //import kiraju.model.Menu;
@@ -135,14 +140,19 @@ import kiraju.model.MenuItem;
 import kiraju.model.MetodePembayaran;
 import kiraju.model.Pajak;
 import kiraju.model.Pelanggan;
+import kiraju.model.Pemasok;
 import kiraju.model.Pengeluaran;
 import kiraju.model.Pesan;
 import kiraju.model.Posisi;
+import kiraju.model.Satuan;
 import kiraju.model.StokOpname;
 import kiraju.model.StokOpnameItem;
 import kiraju.model.Transaksi;
+import kiraju.model.TransaksiPembelian;
+import kiraju.model.Umum;
 import kiraju.model.Users;
 import kiraju.property.AbsensiProperty;
+import kiraju.property.DaftarPembelianProperty;
 import kiraju.property.DiskonPajakProperty;
 import kiraju.property.JenisMenuProperty;
 import kiraju.property.MejaProperty;
@@ -150,11 +160,13 @@ import kiraju.property.MenuItemProperty;
 //import kiraju.property.MenuProperty;
 import kiraju.property.MetodePembayaranProperty;
 import kiraju.property.PelangganProperty;
+import kiraju.property.PemasokProperty;
 import kiraju.property.PengeluaranProperty;
 import kiraju.property.PesanProperty;
 import kiraju.property.PosisiProperty;
 import kiraju.property.StokOpnameItemProperty;
 import kiraju.property.StokOpnameProperty;
+import kiraju.property.TransaksiPembelianProperty;
 import kiraju.property.TransaksiProperty;
 import kiraju.property.UsersProperty;
 import kiraju.util.Choice;
@@ -164,16 +176,18 @@ import kiraju.util.Validation;
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.util.JRLoader;
-import org.apache.log4j.Logger;
 import org.controlsfx.control.textfield.AutoCompletionBinding;
 import org.controlsfx.control.textfield.TextFields;
+import kiraju.interfaces.IUmum;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author arvita
  */
 public class AdminController implements Initializable {
-    private final static Logger LOGGER = Logger.getLogger(AdminController.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(AdminController.class);
 //    @FXML
 //    private TableView<MenuProperty> menuTable;
     @FXML
@@ -224,12 +238,13 @@ public class AdminController implements Initializable {
 //    private TableView<MenuProperty> mejaMenuTable;
     @FXML
     private TableView<MenuItemProperty> mejaMenuItemTable;
-//    @FXML
-//    private TableColumn<MenuProperty, MenuProperty> noColumn;
-//    @FXML
-//    private TableColumn<MenuProperty, String> namaColumn;
-//    @FXML
-//    private TableColumn<MenuProperty, String> statusColumn;
+    @FXML
+    private TableView<TransaksiPembelianProperty> pembelianTrxTable;
+    @FXML
+    private TableView<PemasokProperty> pemasokTable;
+    @FXML
+    private TableView<DaftarPembelianProperty> pembelianDetilTable;
+    
     @FXML
     private TableColumn<JenisMenuProperty, JenisMenuProperty> noColumnJenis;
     @FXML
@@ -262,10 +277,12 @@ public class AdminController implements Initializable {
     private TableColumn<TransaksiProperty, TransaksiProperty> noColumnPemasukan;
     @FXML
     private TableColumn<TransaksiProperty, String> waktuColumnPemasukan;
-    @FXML
-    private TableColumn<TransaksiProperty, String> statusColumnPemasukan;
+//    @FXML
+//    private TableColumn<TransaksiProperty, String> statusColumnPemasukan;
     @FXML
     private TableColumn<TransaksiProperty, String> totalColumnPemasukan;
+    @FXML
+    private TableColumn<TransaksiProperty, String> pelangganColumnPemasukan;
     @FXML
     private TableColumn<TransaksiProperty, String> metodePembayaranColumnPemasukan;
     @FXML
@@ -393,6 +410,30 @@ public class AdminController implements Initializable {
     @FXML
     private TableColumn<MenuItemProperty, String> namaColumnMenuItemMeja;
     @FXML
+    private TableColumn<PemasokProperty, PemasokProperty> noColumnPemasok;
+    @FXML
+    private TableColumn<PemasokProperty, String> namaColumnPemasok;
+    @FXML
+    private TableColumn<PemasokProperty, String> alamatColumnPemasok;
+    @FXML
+    private TableColumn<PemasokProperty, String> emailColumnPemasok;
+    @FXML
+    private TableColumn<PemasokProperty, String> telponColumnPemasok;
+    @FXML
+    private TableColumn<TransaksiPembelianProperty, String> tglClmnTrxBeli;
+    @FXML
+    private TableColumn<TransaksiPembelianProperty, String> pemasokClmnTrxBeli;
+    @FXML
+    private TableColumn<TransaksiPembelianProperty, String> totalClmnTrxBeli;
+    @FXML
+    private TableColumn<TransaksiPembelianProperty, String> statusClmnTrxBeli;
+    @FXML
+    private TableColumn<DaftarPembelianProperty, String> produkClmnTrxBeli;
+    @FXML
+    private TableColumn<DaftarPembelianProperty, String> hargaClmnTrxBeli;
+    @FXML
+    private TableColumn<DaftarPembelianProperty, String> jumlahClmnTrxBeli;
+    @FXML
     private TextField namaTextField;
     @FXML
     private TextField searchTextField;
@@ -475,6 +516,14 @@ public class AdminController implements Initializable {
     @FXML
     private TextField zakatBulanHutangTF;
     @FXML
+    private TextField cariPemasokTF;
+    @FXML
+    private TextField pemasokNamaTF;
+    @FXML
+    private TextField pemasokEmailTF;
+    @FXML
+    private TextField pemasokTelponTF;
+    @FXML
     private ChoiceBox<Choice> jenisBox;
     @FXML
     private ChoiceBox<Choice> jenisMenuBox;
@@ -517,6 +566,9 @@ public class AdminController implements Initializable {
     @FXML
     private ChoiceBox<String> pengaturanPrinterCB;
     @FXML
+    private ChoiceBox<String> menuItemSatuanCB;
+    
+    @FXML
     private TabPane tabPane;
     @FXML
     private Tab pesanTab;
@@ -556,6 +608,10 @@ public class AdminController implements Initializable {
     private Tab zakatTab;
     @FXML
     private Tab pengaturanTab;
+    @FXML
+    private Tab pembelianTab;
+    @FXML
+    private Tab pemasokTab;
     @FXML
     private Text namaMeja;
     @FXML
@@ -604,6 +660,8 @@ public class AdminController implements Initializable {
     private Text zakatBulanLabaRugi;
     @FXML
     private Text zakatBulanTotal;
+    @FXML
+    private Text pembelianTotal;
     @FXML
     private Text caption;
     @FXML
@@ -896,6 +954,15 @@ public class AdminController implements Initializable {
     @FXML
     private Button mejaPesanBtn;
     @FXML
+    private Button pemasokSimpanBtn;
+    @FXML
+    private Button pembelianUbahBtn;
+    @FXML
+    private Button pembelianHapusBtn;
+    @FXML
+    private Button menuItemHapusBtn;
+    
+    @FXML
     private DatePicker pemasukanDate;
     @FXML
     private DatePicker pengeluaranDate;
@@ -907,6 +974,8 @@ public class AdminController implements Initializable {
     private DatePicker absensiDate;
     @FXML
     private DatePicker zakatDate;
+    @FXML
+    private DatePicker pembelianDate;
     @FXML
     private LineChart<String, Number> chartBulan;
     @FXML
@@ -935,6 +1004,11 @@ public class AdminController implements Initializable {
     private CheckBox menuStatusCheckBox;
     @FXML
     private CheckBox pengaturanModeCafeCheckBox;
+    @FXML
+    private CheckBox pemasokStatusCheckBox;
+    @FXML
+    private CheckBox menuDijualCheckBox;
+    
 //    @FXML
 //    private ComboBox<String> searchmenuItemComboBox;
     @FXML
@@ -945,6 +1019,8 @@ public class AdminController implements Initializable {
     private TextArea detilPelangganAlamat;
     @FXML
     private TextArea stokOpnameItemKet;
+    @FXML
+    private TextArea pemasokAlamatTF;
     @FXML
     private VBox pesanMenuBox;
     @FXML
@@ -982,6 +1058,10 @@ public class AdminController implements Initializable {
     private ObservableList<MenuItemProperty> mejaMenuItemPropObsList;
     private ObservableList<PelangganProperty> daftarPelangganPropObsList;
     private ObservableList<TransaksiProperty> riwayatPelangganPropObsList = FXCollections.observableArrayList();
+    private ObservableList<TransaksiPembelianProperty> trxBeliPropObsList;
+    private ObservableList<PemasokProperty> daftarPemasokPropObsList;
+    private ObservableList<DaftarPembelianProperty> listBeliPropObsList = FXCollections.observableArrayList();
+    
     private Map<String,String> map3 = new HashMap<>();
     private ObservableMap<String, String> usersChoiceObsMap = FXCollections.observableMap(map3);
 //    private final IMenu iMenu = new MenuModel();
@@ -1001,7 +1081,12 @@ public class AdminController implements Initializable {
     private final IPajak iPajak = new PajakModel();
     private final IMetodePembayaran iMetodePembayaran = new MetodePembayaranModel();
     private final IAbsensi iAbsensi = new AbsensiModel();
-    private final IGeneral iGeneral = new GeneralModel();
+    private final IUmum iGeneral = new UmumModel();
+    private final ITransaksiPembelian iTransaksiPembelian = new TransaksiPembelianModel();
+    private final IPemasok iPemasok = new PemasokModel();
+    private final IDaftarPembelian iDaftarPembelian = new DaftarPembelianModel();
+    private final ISatuan iSatuan = new SatuanModel();
+    
     private short mejaActive = 0;
     private TransaksiProperty selectedNamaBungkus;
     private Integer totalHargaMeja = 0;
@@ -1020,7 +1105,7 @@ public class AdminController implements Initializable {
     private Integer mejaGlobalPajak = 0;
     private int hartaTot = 0;
     private long zakatTot = 0;
-    private General general;
+    private Umum umum;
     
     private final StringBuffer barcode = new StringBuffer();
     private long lastEventTimeStamp = 0L;
@@ -1030,7 +1115,7 @@ public class AdminController implements Initializable {
     }
 
     public void setLoginUser(Users loginUser) {
-        general = iGeneral.getGeneral();
+        umum = iGeneral.getUmum();
         
         List superuser;
         List admin;
@@ -1047,8 +1132,8 @@ public class AdminController implements Initializable {
 //        }
         
         //20180912 - kiraju-lite
-        superuser = Arrays.asList(pesanTab, bungkusTab, mejaTab, pemasukanTab, pengeluaranTab, menuTab, jenisMenutab, diskonPajakTab, grafikTab, adminMejaTab, backupRestoreTab, zakatTab, usersTab);
-        admin = Arrays.asList(pesanTab, bungkusTab, mejaTab, pemasukanTab, pengeluaranTab, menuTab, jenisMenutab, diskonPajakTab, grafikTab, adminMejaTab, backupRestoreTab, zakatTab);
+        superuser = Arrays.asList(pesanTab, bungkusTab, mejaTab, pemasukanTab, pengeluaranTab, menuTab, jenisMenutab, pembelianTab, pemasokTab, diskonPajakTab, grafikTab, adminMejaTab, backupRestoreTab, zakatTab, usersTab);
+        admin = Arrays.asList(pesanTab, bungkusTab, mejaTab, pemasukanTab, pengeluaranTab, menuTab, jenisMenutab, pembelianTab, pemasokTab, diskonPajakTab, grafikTab, adminMejaTab, backupRestoreTab, zakatTab);
         kasir = Arrays.asList(pesanTab, bungkusTab, mejaTab, pemasukanTab);
         
         //@20171223 - kiraju3
@@ -1065,7 +1150,7 @@ public class AdminController implements Initializable {
         this.loginUser = loginUser;
         pemasukanObsList.clear();
         
-        tabPane.getTabs().removeAll(pesanTab, mejaTab, bungkusTab, pemasukanTab, pengeluaranTab, absensiTab, menuTab, jenisMenutab, diskonPajakTab ,adminMejaTab, stokOpnameTab, metodePembayaranTab, pelangganTab, grafikTab, adminMejaTab, pengaturanTab, backupRestoreTab, zakatTab, usersTab);
+        tabPane.getTabs().removeAll(pesanTab, mejaTab, bungkusTab, pemasukanTab, pengeluaranTab, absensiTab, menuTab, jenisMenutab, pembelianTab, pemasokTab, diskonPajakTab ,adminMejaTab, stokOpnameTab, metodePembayaranTab, pelangganTab, grafikTab, adminMejaTab, pengaturanTab, backupRestoreTab, zakatTab, usersTab);
         pemasukanChoiceBox.setDisable(false);
         usersTab.setDisable(false);
         switch (loginUser.getPosisiId().getId()) {
@@ -1107,6 +1192,8 @@ public class AdminController implements Initializable {
                     pengaturanTab.setDisable(true);
                     mejaTab.setDisable(true);
                     adminMejaTab.setDisable(true);
+                    pembelianTab.setDisable(true);
+                    pemasokTab.setDisable(true);
                     
                     pemasukanChoiceBox.setDisable(true);
                 }else{
@@ -1180,6 +1267,9 @@ public class AdminController implements Initializable {
         logoKiraju.setImage(new Image(this.getClass().getResource("img/kiraju-edited2.png").toString()));
         kalkulatorZakat();
         pengaturan();
+
+	pemasok();
+        setPembelian();
     }    
     
 //    private void displayEdit(MenuProperty menuProp){
@@ -2258,6 +2348,21 @@ public class AdminController implements Initializable {
             if(null == menuItemTable.getSelectionModel().getSelectedItem())
             menuItemKodeTF.setText(newValue.toUpperCase().replace(" ", ""));
         });
+        
+        menuItemSatuanCB.getItems().add("");
+        menuItemSatuanCB.getItems().addAll(iSatuan.getCodeList());
+        menuItemSatuanCB.getSelectionModel().selectFirst();
+        menuDijualCheckBox.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+            if(!newValue){
+                menuItemHargaJualTF.setText("");
+                menuItemHargaJualTF.setDisable(true);
+//                menuItemSatuanCB.getSelectionModel().selectFirst();
+//                menuItemSatuanCB.setDisable(true);
+            }else{
+                menuItemHargaJualTF.setDisable(false);
+//                menuItemSatuanCB.setDisable(false);
+            }
+        });
     }   
     
     
@@ -2530,7 +2635,7 @@ public class AdminController implements Initializable {
         if (result.get() == ButtonType.OK){
              InputStream logoStream = this.getClass().getResourceAsStream(CommonConstant.LOGO_KEDAI);
             String printer;
-            if(general.getPrinterCode().equalsIgnoreCase("58mm")) {
+            if(umum.getPrinterCode().equalsIgnoreCase("58mm")) {
                 printer = "reports/print_A8_logo.jasper";
             }else{
                 printer = "reports/print_A7_logo.jasper";
@@ -2643,7 +2748,7 @@ public class AdminController implements Initializable {
                 transaksi.setId(selectedNamaBungkus.getId());
                 transaksi.setTotal(selectedNamaBungkus.getTotal());
                 transaksi.setUserEnd(loginUser);
-                transaksi.setMejaId(new Meja((short) 0));
+//                transaksi.setMejaId(new Meja((short) 0));
                 controller.initValue(transaksi, CommonConstant.TRANSAKSI_TERSIMPAN, menuBungkusObsList);
 
                 dialogStage.showAndWait();
@@ -2713,9 +2818,9 @@ public class AdminController implements Initializable {
         });
         noColumnPemasukan.setSortable(false);
         waktuColumnPemasukan.setCellValueFactory(cellData -> cellData.getValue().waktuProperty());
-        statusColumnPemasukan.setCellValueFactory(cellData -> cellData.getValue().statusTransaksiproperty());
         totalColumnPemasukan.setCellValueFactory(cellData -> cellData.getValue().totalProperty());
         metodePembayaranColumnPemasukan.setCellValueFactory(cellData -> cellData.getValue().metodePembayaranNamaProperty());
+        pelangganColumnPemasukan.setCellValueFactory(cellData -> cellData.getValue().namaPemesanProperty());
         
         pemasukanTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             displayPemasukanDetails(newValue);
@@ -2726,7 +2831,6 @@ public class AdminController implements Initializable {
         pemasukanMetodePembayaranTotalClm.setCellValueFactory(cellData -> cellData.getValue().totalProperty());
         
         //displayDetail
-//        pemasukanDetailMenuClmn.setCellValueFactory(cellData -> cellData.getValue().menuNamaProperty());
         pemasukanDetailItemClmn.setCellValueFactory(cellData -> cellData.getValue().menuItemNamaProperty());
         pemasukanDetailJumlahClmn.setCellValueFactory(cellData -> cellData.getValue().jumlahProperty().asObject());
     }
@@ -2750,18 +2854,18 @@ public class AdminController implements Initializable {
 
     private void setPemasukanTable(String userId) {
         Integer pemasukanTotalBayar = 0;
-        Integer pemasukanTotalBatal = 0;
+//        Integer pemasukanTotalBatal = 0;
         pemasukanObsList = iTransaksi.getPemasukanByTglAndUser(pemasukanDate.getValue(), userId);
         for(int i = 0; i < pemasukanObsList.size(); i++){
             TransaksiProperty transaksiProperty = (TransaksiProperty) pemasukanObsList.get(i);
-            if(Objects.equals(transaksiProperty.getStatusTransaksi(), CommonConstant.TRANSAKSI_BAYAR)){
+//            if(Objects.equals(transaksiProperty.getStatusTransaksi(), CommonConstant.TRANSAKSI_BAYAR)){
                 pemasukanTotalBayar += transaksiProperty.getTotal();
-            }else if(Objects.equals(transaksiProperty.getStatusTransaksi(), CommonConstant.TRANSAKSI_BATAL)){
-                pemasukanTotalBatal += transaksiProperty.getTotal();
-            }
+//            }else if(Objects.equals(transaksiProperty.getStatusTransaksi(), CommonConstant.TRANSAKSI_BATAL)){
+//                pemasukanTotalBatal += transaksiProperty.getTotal();
+//            }
         }
         totalBayar.setText(numberFormat.format(pemasukanTotalBayar));
-        totalBatal.setText(numberFormat.format(pemasukanTotalBatal));
+//        totalBatal.setText(numberFormat.format(pemasukanTotalBatal));
         pemasukanTable.setItems(pemasukanObsList);
         
         //metodePembayaranTable
@@ -2788,7 +2892,7 @@ public class AdminController implements Initializable {
             }
         });
 //        jenisLaporanCB.getItems().addAll("Penjualan Harian", "Penjualan Produk", "Absensi");
-        jenisLaporanCB.getItems().addAll("Penjualan Harian", "Penjualan Produk");   //remove Absensi @20171222 - kiraju3
+        jenisLaporanCB.getItems().addAll("Penjualan Harian", "Penjualan Produk", "Pembelian");
         jenisLaporanCB.getSelectionModel().selectFirst();
         transaksiDariDate.setValue(LocalDate.now());
         transaksiDariDate.setConverter(new StringConverter<LocalDate>(){
@@ -2839,44 +2943,62 @@ public class AdminController implements Initializable {
         String monthIndo = new DateFormatSymbols(locale).getMonths()[bulan-1];
         chartBulan.getData().clear();      
         xAxisBulanan.setLabel("Tanggal");
-        List resultList1 = iTransaksi.getChartByBulan(bulan);
-        List resultList2 = iPengeluaran.getChartByBulan(bulan);
+        List resultPenjualanList = iTransaksi.getChartByBulan(bulan);
+        List resultBebanList = iPengeluaran.getChartByBulan(bulan);
+        List resultPembelianList = iTransaksiPembelian.getChartByBulan(bulan);
         YearMonth yearMonth = YearMonth.of(LocalDate.now().getYear(), bulan);
         chartBulan.setTitle("Keuangan "+monthIndo+" "+LocalDate.now().getYear());
-        XYChart.Series<String, Number> series1 = new XYChart.Series();
-        series1.setName("Penjualan");
-        XYChart.Series<String, Number> series2 = new XYChart.Series();
-        series2.setName("Beban");
+        XYChart.Series<String, Number> seriespenjualan = new XYChart.Series();
+        seriespenjualan.setName("Penjualan");
+        XYChart.Series<String, Number> seriesBeban = new XYChart.Series();
+        seriesBeban.setName("Beban");
+        XYChart.Series<String, Number> seriesPembelian = new XYChart.Series();
+        seriesPembelian.setName("Pembelian");
         
         for(int i = 1; i <= yearMonth.lengthOfMonth(); i++){
-            XYChart.Data<String, Number> data1 = new XYChart.Data(Integer.toString(i), 0);
-            if(resultList1 != null){
-                for(Object rows : resultList1){
+            XYChart.Data<String, Number> dataPenjualan = new XYChart.Data(Integer.toString(i), 0);
+            if(resultPenjualanList != null){
+                for(Object rows : resultPenjualanList){
                     Object[] row = (Object[]) rows;
                     Integer hari = (Integer) row[0];
                     Long tot = (Long) row[1];
                     if(i == hari){
-                        data1.setYValue(tot);
+                        dataPenjualan.setYValue(tot);
                         break;
                     }
                 }
             }
-            series1.getData().add(data1);
-            XYChart.Data<String, Number> data2 = new XYChart.Data(Integer.toString(i), 0);
-            if(resultList2 != null){
-                for(Object rows : resultList2){
+            seriespenjualan.getData().add(dataPenjualan);
+            
+            XYChart.Data<String, Number> dataBeban = new XYChart.Data(Integer.toString(i), 0);
+            if(resultBebanList != null){
+                for(Object rows : resultBebanList){
                     Object[] row = (Object[]) rows;
                     Integer hari = (Integer) row[0];
                     Long tot = (Long) row[1];
                     if(i == hari){
-                        data2.setYValue(tot);
+                        dataBeban.setYValue(tot);
                         break;
                     }
                 }
             }
-            series2.getData().add(data2);
+            seriesBeban.getData().add(dataBeban);
+            
+            XYChart.Data<String, Number> dataPembelian = new XYChart.Data(Integer.toString(i), 0);
+            if(resultPembelianList != null){
+                for(Object rows : resultPembelianList){
+                    Object[] row = (Object[]) rows;
+                    Integer hari = (Integer) row[0];
+                    Long tot = (Long) row[1];
+                    if(i == hari){
+                        dataPembelian.setYValue(tot);
+                        break;
+                    }
+                }
+            }
+            seriesPembelian.getData().add(dataPembelian);
         }
-        chartBulan.getData().addAll(series1, series2);
+        chartBulan.getData().addAll(seriespenjualan, seriesPembelian ,seriesBeban);
         
         /**
          * Browsing through the Data and applying ToolTip
@@ -2899,42 +3021,60 @@ public class AdminController implements Initializable {
         chartTahun.getData().clear();
         xAxisTahunan.setLabel("Bulan");
         chartTahun.setTitle("Keuangan "+ year);
-        List resultList1 = iTransaksi.getChartByTahun(year);
-        List resultList2 = iPengeluaran.getChartByTahun(year);
-        XYChart.Series<String, Number> series1 = new XYChart.Series();
-        series1.setName("Penjualan");
-        XYChart.Series<String, Number> series2 = new XYChart.Series();
-        series2.setName("Beban");
+        List penjualanList = iTransaksi.getChartByTahun(year);
+        List bebanList = iPengeluaran.getChartByTahun(year);
+        List pembelianList = iTransaksiPembelian.getChartByTahun(year);
+        XYChart.Series<String, Number> seriesPenjualan = new XYChart.Series();
+        seriesPenjualan.setName("Penjualan");
+        XYChart.Series<String, Number> seriesBeban = new XYChart.Series();
+        seriesBeban.setName("Beban");
+        XYChart.Series<String, Number> seriesPembelian = new XYChart.Series();
+        seriesPembelian.setName("Pembelian");
         for(int i = 1; i <= 12; i++){
-            XYChart.Data<String, Number> data1 = new XYChart.Data(Integer.toString(i), 0);
-            if(resultList1 != null){
-                for(Object rows : resultList1){
+            XYChart.Data<String, Number> dataPenjualan = new XYChart.Data(Integer.toString(i), 0);
+            if(penjualanList != null){
+                for(Object rows : penjualanList){
                     Object[] row = (Object[]) rows;
                     Integer bln = (Integer) row[0];
                     Long tot = (Long) row[1];
                     if(i == bln){
-                        data1.setYValue(tot);
+                        dataPenjualan.setYValue(tot);
                         break;
                     }
                 }
             }
-            series1.getData().add(data1);
-            XYChart.Data<String, Number> data2 = new XYChart.Data(Integer.toString(i), 0);
-            if(resultList2 != null){
-                for(Object rows : resultList2){
+            seriesPenjualan.getData().add(dataPenjualan);
+            
+            XYChart.Data<String, Number> dataBeban = new XYChart.Data(Integer.toString(i), 0);
+            if(bebanList != null){
+                for(Object rows : bebanList){
                     Object[] row = (Object[]) rows;
                     Integer bln = (Integer) row[0];
                     Long tot = (Long) row[1];
                     if(i == bln){
-                        data2.setYValue(tot);
+                        dataBeban.setYValue(tot);
                         break;
                     }
                 }
             }
-            series2.getData().add(data2);
+            seriesBeban.getData().add(dataBeban);
+            
+            XYChart.Data<String, Number> dataPembelian = new XYChart.Data(Integer.toString(i), 0);
+            if(pembelianList != null){
+                for(Object rows : pembelianList){
+                    Object[] row = (Object[]) rows;
+                    Integer bln = (Integer) row[0];
+                    Long tot = (Long) row[1];
+                    if(i == bln){
+                        dataPembelian.setYValue(tot);
+                        break;
+                    }
+                }
+            }
+            seriesPembelian.getData().add(dataPembelian);
         }
         
-        chartTahun.getData().addAll(series1, series2);
+        chartTahun.getData().addAll(seriesPenjualan, seriesPembelian , seriesBeban);
         
         /**
          * Browsing through the Data and applying ToolTip
@@ -3201,13 +3341,21 @@ public class AdminController implements Initializable {
     
     @FXML
     private void downloadLaporan(ActionEvent event) {
-        DirectoryChooser directoryChooser = new DirectoryChooser();
-        directoryChooser.setTitle("Pilih Direktori/Folder");
-        directoryChooser.setInitialDirectory(new File(System.getProperty("user.home")));
-        File dirTarget = directoryChooser.showDialog(primaryStage);
-        if(dirTarget != null){
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Simpan File");
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+//        fileChooser.setInitialFileName("laporan.pdf");
+        FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("PDF files", "*.pdf");
+        fileChooser.getExtensionFilters().add(filter);
+        File selectedFile = fileChooser.showSaveDialog(primaryStage);
+        
+//        DirectoryChooser directoryChooser = new DirectoryChooser();
+//        directoryChooser.setTitle("Pilih Direktori/Folder");
+//        directoryChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+//        File dirTarget = directoryChooser.showDialog(primaryStage);
+        if(selectedFile != null){
             try {
-                if(jenisLaporanCB.getSelectionModel().isSelected(0)){
+                if(jenisLaporanCB.getValue().equalsIgnoreCase("Penjualan Harian")){
                     List<Laporan> dataList = iTransaksi.getLaporan(transaksiDariDate.getValue(), transaksiSampaiDate.getValue());
                     if(null != dataList && dataList.size() > 0) {
                         JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(dataList);
@@ -3221,9 +3369,11 @@ public class AdminController implements Initializable {
                         InputStream reportStream = this.getClass().getResourceAsStream("reports/laporan.jasper");
                         JasperPrint print = JasperFillManager.fillReport(reportStream, parameters, beanColDataSource);
                         if(print != null) {
-                            DateFormat df = new SimpleDateFormat("yyyyMMdd");
-                            String printOutDir= dirTarget.getAbsolutePath() + File.separator + "Laporan_Penjualan_Harian_" + df.format(tglDari) + "-" + df.format(tglSampai);
-                            JasperExportManager.exportReportToPdfFile(print, printOutDir + ".pdf");
+//                            DateFormat df = new SimpleDateFormat("yyyyMMdd");
+//                            String printOutDir= dirTarget.getAbsolutePath() + File.separator + "Laporan_Penjualan_Harian_" + df.format(tglDari) + "-" + df.format(tglSampai);
+//                            JasperExportManager.exportReportToPdfFile(print, printOutDir + ".pdf");
+                            String filePath = selectedFile.getName().endsWith(".pdf") ? selectedFile.getPath() : selectedFile.getPath() + ".pdf";
+                            JasperExportManager.exportReportToPdfFile(print, filePath);
                             Alert alert = new Alert(AlertType.INFORMATION);
                             alert.setTitle("Informasi");
                             alert.setHeaderText("Selesai");
@@ -3238,7 +3388,7 @@ public class AdminController implements Initializable {
                         alert.setContentText("Silahkan pilih tanggal yang lain");
                         alert.showAndWait();
                     }
-                }else if(jenisLaporanCB.getSelectionModel().isSelected(1)){
+                }else if(jenisLaporanCB.getValue().equalsIgnoreCase("Penjualan Produk")){
                     List<Laporan> dataList = iTransaksi.getLaporanPenjualan(transaksiDariDate.getValue(), transaksiSampaiDate.getValue());
                     Laporan laporan = iTransaksi.getLaporanPenjualan2(transaksiDariDate.getValue(), transaksiSampaiDate.getValue());
                     if(null != dataList && dataList.size() > 0) {
@@ -3255,9 +3405,10 @@ public class AdminController implements Initializable {
                         InputStream reportStream = this.getClass().getResourceAsStream("reports/lap_penjualan.jasper");
                         JasperPrint print = JasperFillManager.fillReport(reportStream, parameters, beanColDataSource);
                         if(print != null) {
-                            DateFormat df = new SimpleDateFormat("yyyyMMdd");
-                            String printOutDir= dirTarget.getAbsolutePath() + File.separator + "Laporan_Penjualan_Produk_" + df.format(tglDari) + "-" + df.format(tglSampai);
-                            JasperExportManager.exportReportToPdfFile(print, printOutDir + ".pdf");
+//                            DateFormat df = new SimpleDateFormat("yyyyMMdd");
+//                            String printOutDir= dirTarget.getAbsolutePath() + File.separator + "Laporan_Penjualan_Produk_" + df.format(tglDari) + "-" + df.format(tglSampai);
+                            String filePath = selectedFile.getName().endsWith(".pdf") ? selectedFile.getPath() : selectedFile.getPath() + ".pdf";
+                            JasperExportManager.exportReportToPdfFile(print, filePath);
                             Alert alert = new Alert(AlertType.INFORMATION);
                             alert.setTitle("Informasi");
                             alert.setHeaderText("Selesai");
@@ -3272,7 +3423,7 @@ public class AdminController implements Initializable {
                         alert.setContentText("Silahkan pilih tanggal yang lain");
                         alert.showAndWait();
                     }
-                }else if(jenisLaporanCB.getSelectionModel().isSelected(2)) {
+                }else if(jenisLaporanCB.getValue().equalsIgnoreCase("Absensi")) {
                     List<AbsensiProperty> dataList = iAbsensi.getLaporan(transaksiDariDate.getValue(), transaksiSampaiDate.getValue());
                     if(null != dataList && dataList.size() > 0) {
                         JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(dataList);
@@ -3286,13 +3437,46 @@ public class AdminController implements Initializable {
                         InputStream reportStream = this.getClass().getResourceAsStream("reports/absensi.jasper");
                         JasperPrint print = JasperFillManager.fillReport(reportStream, parameters, beanColDataSource);
                         if(print != null) {
-                            DateFormat df = new SimpleDateFormat("yyyyMMdd");
-                            String printOutDir= dirTarget.getAbsolutePath() + File.separator + "Absensi_" + df.format(tglDari) + "-" + df.format(tglSampai);
-                            JasperExportManager.exportReportToPdfFile(print, printOutDir + ".pdf");
+//                            DateFormat df = new SimpleDateFormat("yyyyMMdd");
+//                            String printOutDir= dirTarget.getAbsolutePath() + File.separator + "Absensi_" + df.format(tglDari) + "-" + df.format(tglSampai);
+                            String filePath = selectedFile.getName().endsWith(".pdf") ? selectedFile.getPath() : selectedFile.getPath() + ".pdf";
+                            JasperExportManager.exportReportToPdfFile(print, filePath);
                             Alert alert = new Alert(AlertType.INFORMATION);
                             alert.setTitle("Informasi");
                             alert.setHeaderText("Selesai");
                             alert.setContentText("Absensi telah dibuat");
+                            alert.showAndWait();
+                        }
+                    }else{
+                        Alert alert = new Alert(AlertType.ERROR);
+                        alert.initOwner(primaryStage);
+                        alert.setTitle("Salah!");
+                        alert.setHeaderText("Tidak ada transaksi pada tanggal yang dipilih");
+                        alert.setContentText("Silahkan pilih tanggal yang lain");
+                        alert.showAndWait();
+                    }
+                }else if(jenisLaporanCB.getValue().equalsIgnoreCase("Pembelian")){
+                    List<Laporan> dataList = iTransaksiPembelian.getLaporanPembelian(transaksiDariDate.getValue(), transaksiSampaiDate.getValue());
+                    if(null != dataList && dataList.size() > 0) {
+                        JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(dataList);
+                        Date tglDari = Date.from(transaksiDariDate.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
+                        Date tglSampai = Date.from(transaksiSampaiDate.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
+                        HashMap<String, Object> parameters = new HashMap<>();
+                        parameters.put(JRParameter.REPORT_LOCALE, new Locale("id", "ID"));
+                        parameters.put("cafe", CommonConstant.KEDAI_NAMA);
+                        parameters.put("tglDari", tglDari);
+                        parameters.put("tglSampai", tglSampai);
+                        InputStream reportStream = this.getClass().getResourceAsStream("reports/lap_pembelian.jasper");
+                        JasperPrint print = JasperFillManager.fillReport(reportStream, parameters, beanColDataSource);
+                        if(print != null) {
+//                            DateFormat df = new SimpleDateFormat("yyyyMMdd");
+//                            String printOutDir= dirTarget.getAbsolutePath() + File.separator + "Laporan_Pembelian_" + df.format(tglDari) + "-" + df.format(tglSampai);
+                            String filePath = selectedFile.getName().endsWith(".pdf") ? selectedFile.getPath() : selectedFile.getPath() + ".pdf";
+                            JasperExportManager.exportReportToPdfFile(print, filePath);
+                            Alert alert = new Alert(AlertType.INFORMATION);
+                            alert.setTitle("Informasi");
+                            alert.setHeaderText("Selesai");
+                            alert.setContentText("Laporan Pembelian telah dibuat");
                             alert.showAndWait();
                         }
                     }else{
@@ -3468,7 +3652,6 @@ public class AdminController implements Initializable {
             if(null != pesanMenuItemOrderedObsList && !pesanMenuItemOrderedObsList.isEmpty()) {
                 for(int i=0; i<pesanMenuItemOrderedObsList.size(); i++){
                     totalHargaPesan += pesanMenuItemOrderedObsList.get(i).getTotalHarga();
-//                    totalModalPesan += pesanMenuItemOrderedObsList.get(i).getTotalModal();
                 }
                 pesanDiskonCB.setValue(new Choice(pesanMenuItemOrderedObsList.get(0).getDiskonId(), pesanMenuItemOrderedObsList.get(0).getDiskonNama()));
                 pesanPajakCB.setValue(new Choice(pesanMenuItemOrderedObsList.get(0).getPajakId(), pesanMenuItemOrderedObsList.get(0).getPajakNama()));
@@ -3573,7 +3756,7 @@ public class AdminController implements Initializable {
     }
     
     @FXML
-    private void pesanSimpanBtn(ActionEvent actionEvent) {
+    private void pesanSimpanAction(ActionEvent actionEvent) {
         String namaPemesan = pesanMenuItemOrderedObsList.get(0).getNamaPemesan();
         TextInputDialog dialog = new TextInputDialog(namaPemesan);
         dialog.setTitle("Simpan");
@@ -3707,7 +3890,9 @@ public class AdminController implements Initializable {
             menuItemKodeTF.setText(newValue.getCode());
             menuItemKodeTF.setDisable(true);
             menuItemNamaTF.setText(newValue.getNama());
-            menuItemHargaJualTF.setText(newValue.getHargaJual().replace(".", ""));
+            if(null != newValue.getHargaJual()) {
+                menuItemHargaJualTF.setText(newValue.getHargaJual().replace(".", ""));
+            }
             stokCheckBox.setSelected(newValue.getStokFlag());
             if(newValue.getStokFlag()) {
                 stokTambahTF.setDisable(false);
@@ -3717,6 +3902,13 @@ public class AdminController implements Initializable {
             
             jenisMenuBox.setValue(new Choice(newValue.getJenisId(), newValue.getJenisNama()));
             menuStatusCheckBox.setSelected(newValue.getStatus());
+            menuDijualCheckBox.setSelected(newValue.getIsDijual());
+            menuItemHapusBtn.setDisable(false);
+            if(null != newValue.getSatuan()){
+                menuItemSatuanCB.setValue(newValue.getSatuan());
+            }else{
+                menuItemSatuanCB.getSelectionModel().selectFirst();
+            }
             
         }else{
             menuItemKodeTF.setText("");
@@ -3729,6 +3921,9 @@ public class AdminController implements Initializable {
             
             jenisMenuBox.setValue(null);
             menuStatusCheckBox.setSelected(true);
+            menuDijualCheckBox.setSelected(true);
+            menuItemHapusBtn.setDisable(true);
+            menuItemSatuanCB.getSelectionModel().selectFirst();
         }
         
     }
@@ -3761,8 +3956,8 @@ public class AdminController implements Initializable {
     
     @FXML
     private void menuItemSimpanAction(ActionEvent event) {
-        TextField[] textFields = {menuItemNamaTF, menuItemKodeTF, menuItemHargaJualTF};
-        String[] namaTextFields = {"Nama", "Kode", "Harga"};
+        TextField[] textFields = {menuItemNamaTF, menuItemKodeTF};
+        String[] namaTextFields = {"Nama", "Kode"};
         List<ChoiceBox<Choice>> choiceBoxs = new ArrayList<>();
         choiceBoxs.add(jenisMenuBox);
         String[] namaChoiceBoxs = {"Kategori"};
@@ -3775,8 +3970,14 @@ public class AdminController implements Initializable {
             JenisMenu jenisMenu = new JenisMenu();
             jenisMenu.setId(jenisMenuBox.getValue().getId());
             menuItem.setJenisMenuId(jenisMenu);
-            menuItem.setHargaTotal(Integer.valueOf(menuItemHargaJualTF.getText()));     //added @20171222 - kiraju3
+            if(null != menuItemHargaJualTF.getText() && !"".equals(menuItemHargaJualTF.getText())) {
+                menuItem.setHargaTotal(Integer.valueOf(menuItemHargaJualTF.getText()));     //added @20171222 - kiraju3
+            }
             menuItem.setStokFlag(stokCheckBox.isSelected());
+            menuItem.setIsJual(menuDijualCheckBox.isSelected());
+            if(null != menuItemSatuanCB.getValue() && !menuItemSatuanCB.getValue().isEmpty()){
+                menuItem.setSatuan(new Satuan(menuItemSatuanCB.getValue()));
+            }
             if(stokCheckBox.isSelected()){
                 Integer stokTambah = Integer.valueOf(null != stokTambahTF.getText() ? stokTambahTF.getText() : "0");
                 Integer stok = 0;
@@ -5179,10 +5380,10 @@ public class AdminController implements Initializable {
     
     @FXML
     private void pengaturanSimpanAction() {
-        General generalUpdate = new General();
-        generalUpdate.setModeCafe(pengaturanModeCafeCheckBox.isSelected());
-        generalUpdate.setPrinterCode(pengaturanPrinterCB.getValue());
-        iGeneral.update(generalUpdate);
+        Umum umumUpdate = new Umum();
+        umumUpdate.setModeCafe(pengaturanModeCafeCheckBox.isSelected());
+        umumUpdate.setPrinterCode(pengaturanPrinterCB.getValue());
+        iGeneral.update(umumUpdate);
         
         Alert alert = new Alert(AlertType.WARNING);
         alert.setTitle("Informasi");
@@ -5193,14 +5394,14 @@ public class AdminController implements Initializable {
     
     @FXML
     private void pengaturanBatalAction() {
-        pengaturanModeCafeCheckBox.setSelected(general.getModeCafe());
-        pengaturanPrinterCB.setValue(general.getPrinterCode());
+        pengaturanModeCafeCheckBox.setSelected(umum.getModeCafe());
+        pengaturanPrinterCB.setValue(umum.getPrinterCode());
     }
 
     private void pengaturan() {
-        pengaturanModeCafeCheckBox.setSelected(general.getModeCafe());
+        pengaturanModeCafeCheckBox.setSelected(umum.getModeCafe());
         pengaturanPrinterCB.getItems().addAll("58mm", "80mm");
-        pengaturanPrinterCB.setValue(general.getPrinterCode());
+        pengaturanPrinterCB.setValue(umum.getPrinterCode());
     }
 
     private void setGrandTotalMeja(Integer totalHargaMeja, Integer diskonId, Integer pajakId) {
@@ -5304,6 +5505,69 @@ public class AdminController implements Initializable {
         sortedData.comparatorProperty().bind(mejaMenuItemTable.comparatorProperty());
         mejaMenuItemTable.setItems(sortedData);
     }
+
+    private void pemasok() {
+        noColumnPemasok.setCellValueFactory((TableColumn.CellDataFeatures<PemasokProperty, PemasokProperty> p) -> new ReadOnlyObjectWrapper(p.getValue()));
+        noColumnPemasok.setCellFactory((TableColumn<PemasokProperty, PemasokProperty> param) -> new TableCell<PemasokProperty, PemasokProperty>() {
+            @Override protected void updateItem(PemasokProperty item, boolean empty) {
+                super.updateItem(item, empty);
+                if (this.getTableRow() != null && item != null) {
+                    setText(this.getTableRow().getIndex()+1+"");
+                } else {
+                    setText("");
+                }
+            }
+        });
+        noColumnPemasok.setSortable(false);
+        namaColumnPemasok.setCellValueFactory(cellData -> cellData.getValue().namaProperty());
+        alamatColumnPemasok.setCellValueFactory(cellData -> cellData.getValue().alamatProperty());
+        emailColumnPemasok.setCellValueFactory(cellData -> cellData.getValue().emailProperty());
+        telponColumnPemasok.setCellValueFactory(cellData -> cellData.getValue().telponProperty());
+        daftarPemasokPropObsList = iPemasok.getAllProp();
+        
+        FilteredList<PemasokProperty> filteredData = new FilteredList<>(daftarPemasokPropObsList, p -> true);
+        cariPemasokTF.textProperty().addListener((observable, oldValue, newValue) -> {
+			filteredData.setPredicate(person -> {
+                            // If filter text is empty, display all persons.
+                            if (newValue == null || newValue.isEmpty()) {
+                                return true;
+                            }
+
+                            // Compare first name and last name of every person with filter text.
+                            String lowerCaseFilter = newValue.toLowerCase();
+//                            if (person.getId().toLowerCase().contains(lowerCaseFilter)) {
+//                                return true; // Filter matches first name.
+//                            } else
+                            // Does not match.
+
+                            return person.getNama().toLowerCase().contains(lowerCaseFilter); 
+			});
+		});
+        
+        SortedList<PemasokProperty> sortedData = new SortedList<>(filteredData);
+        sortedData.comparatorProperty().bind(pemasokTable.comparatorProperty());
+        pemasokTable.setItems(sortedData);
+        
+        pemasokTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> displayEditPemasok(newValue));
+        pemasokSimpanBtn.disableProperty().bind(Bindings.isEmpty(pemasokNamaTF.textProperty()).or(Bindings.isEmpty(pemasokAlamatTF.textProperty()).or(Bindings.isEmpty(pemasokEmailTF.textProperty()).or(Bindings.isEmpty(pemasokTelponTF.textProperty())))));
+//        pemasokBatalBtn.disableProperty().bind(Bindings.isEmpty(pemasokNamaTF.textProperty()).or(Bindings.isEmpty(pemasokAlamatTF.textProperty()).or(Bindings.isEmpty(pemasokEmailTF.textProperty()).or(Bindings.isEmpty(pemasokTelponTF.textProperty())))));
+    }
+
+    private void displayEditPemasok(PemasokProperty newValue) {
+        if(null != newValue) {
+            pemasokNamaTF.setText(newValue.getNama());
+            pemasokAlamatTF.setText(newValue.getAlamat());
+            pemasokEmailTF.setText(newValue.getEmail());
+            pemasokTelponTF.setText(newValue.getTelp());
+            pemasokStatusCheckBox.setSelected(newValue.getStatus());
+        }else{
+            pemasokNamaTF.setText("");
+            pemasokAlamatTF.setText("");
+            pemasokEmailTF.setText("");
+            pemasokTelponTF.setText("");
+            pemasokStatusCheckBox.setSelected(true);
+        }
+    }
     
     @FXML
     private void menuImporProduk() {
@@ -5361,5 +5625,194 @@ public class AdminController implements Initializable {
                 setMenuTable(jenisBox.getValue().getId());
             }
         }
+    }
+    
+    @FXML
+    private void pembelianCreateAction(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(AdminController.class.getResource("PurchaseOrder.fxml"));
+            AnchorPane page = (AnchorPane) loader.load();
+
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Pembelian - Buat baru");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(primaryStage);
+
+            Scene scene = new Scene(page);
+            dialogStage.setScene(scene);
+
+            PurchaseOrderController controller = loader.getController();
+            controller.setDialogStage(dialogStage);
+
+            dialogStage.showAndWait();
+
+            if(controller.isOkClicked()){
+//                pembelianBulanCB.getSelectionModel().clearSelection();
+//                pembelianBulanCB.getSelectionModel().select(LocalDate.now().getMonthValue()-1);
+//                pembelianDate.setValue(LocalDate.now());
+                setPembelianTable();
+            }
+
+        } catch (IOException ex) {
+            LOGGER.error("failed to load PurchaseOrder.fxml", ex);
+        }
+    }
+    
+    @FXML
+    private void setPembelianTable() {
+        trxBeliPropObsList = iTransaksiPembelian.getAllPropByTgl(pembelianDate.getValue());
+        pembelianTrxTable.setItems(trxBeliPropObsList);
+    }
+    
+    private void setPembelian() {
+        tglClmnTrxBeli.setCellValueFactory(cellData -> cellData.getValue().tanggalProperty());
+        pemasokClmnTrxBeli.setCellValueFactory(cellData -> cellData.getValue().pemasokNamaProperty());
+        totalClmnTrxBeli.setCellValueFactory(cellData -> cellData.getValue().totalProperty());
+        statusClmnTrxBeli.setCellValueFactory((cellData -> cellData.getValue().statusProperty()));
+
+        pembelianDate.setValue(LocalDate.now());
+        pembelianDate.setConverter(new StringConverter<LocalDate>(){
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(datePattern);
+            @Override
+            public String toString(LocalDate date) {
+                if (date != null) {
+                    return dateFormatter.format(date);
+                } else {
+                    return "";
+                }
+            }
+
+            @Override
+            public LocalDate fromString(String string) {
+                if (string != null && !string.isEmpty()) {
+                    return LocalDate.parse(string, dateFormatter);
+                } else {
+                    return null;
+                }
+            }
+            
+        });
+        
+        setPembelianTable();
+        
+//        pembelianBulanCB.getItems().addAll(CommonConstant.NAMA_BULAN);
+//        pembelianBulanCB.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
+//            if(null != newValue && newValue.intValue() >= 0){
+//                int bulanBaru = newValue.intValue() + 1;
+//                pembelianTable(bulanBaru);
+//            }
+//        });
+//        pembelianBulanCB.getSelectionModel().select(LocalDate.now().getMonthValue()-1);
+        
+        pembelianTrxTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> displayListBeli(newValue));
+        
+        //daftarbeli
+        produkClmnTrxBeli.setCellValueFactory(cellData -> cellData.getValue().produkProperty());
+        hargaClmnTrxBeli.setCellValueFactory(cellData -> cellData.getValue().hargaFormattedProperty());
+        jumlahClmnTrxBeli.setCellValueFactory(cellData -> cellData.getValue().jumlahProperty());
+        
+    }
+
+    private void displayListBeli(TransaksiPembelianProperty newValue) {
+        listBeliPropObsList.clear();
+        if(null != newValue) {
+            listBeliPropObsList = iDaftarPembelian.getListBeli(new TransaksiPembelian(newValue.getId()));
+            pembelianTotal.setText(newValue.getTotal());
+            pembelianDetilTable.setItems(listBeliPropObsList);
+            
+            if(newValue.getStatus()){
+                pembelianUbahBtn.setDisable(true);
+                pembelianHapusBtn.setDisable(true);
+            }else{
+                pembelianUbahBtn.setDisable(false);
+                pembelianHapusBtn.setDisable(false);
+            }
+        }else{
+            pembelianUbahBtn.setDisable(true);
+            pembelianHapusBtn.setDisable(true);
+        }
+        
+    }
+
+    private void pembelianTable(int bulanBaru) {
+        trxBeliPropObsList = iTransaksiPembelian.getAllProp(bulanBaru);
+        pembelianTrxTable.setItems(trxBeliPropObsList);
+    }
+    
+    @FXML
+    private void pembelianEditAction(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(AdminController.class.getResource("PurchaseOrder.fxml"));
+            AnchorPane page = (AnchorPane) loader.load();
+
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Pembelian - Ubah");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(primaryStage);
+
+            Scene scene = new Scene(page);
+            dialogStage.setScene(scene);
+
+            PurchaseOrderController controller = loader.getController();
+            controller.setDialogStage(dialogStage);
+            controller.iniValue(pembelianTrxTable.getSelectionModel().getSelectedItem());
+
+            dialogStage.showAndWait();
+
+            if(controller.isOkClicked()){
+//                int bulanSelectedIndex = pembelianBulanCB.getSelectionModel().getSelectedIndex();
+                int tableSelectedIndex = pembelianTrxTable.getSelectionModel().getSelectedIndex();
+                setPembelianTable();
+//                pembelianBulanCB.getSelectionModel().clearSelection();
+//                pembelianBulanCB.getSelectionModel().select(bulanSelectedIndex);
+                pembelianTrxTable.getSelectionModel().select(tableSelectedIndex);
+            }
+
+        } catch (IOException ex) {
+            LOGGER.error("failed to load Purchase Order.fxml", ex);
+        }
+    }
+    
+    @FXML
+    private void pembelianHapusAction(ActionEvent event) {
+        Alert alertConfirm = new Alert(Alert.AlertType.CONFIRMATION);
+        alertConfirm.setTitle("Konfirmasi");
+        alertConfirm.setHeaderText("Anda Yakin?");
+//            alertConfirm.setContentText("Anda Yakin?");
+
+        Optional<ButtonType> result = alertConfirm.showAndWait();
+        if (result.get() == ButtonType.OK){
+            TransaksiPembelianProperty selectedItem = pembelianTrxTable.getSelectionModel().getSelectedItem();
+            TransaksiPembelian transaksiPembelian = new TransaksiPembelian(selectedItem.getId());
+            iDaftarPembelian.deleteByTrxPembelianId(transaksiPembelian);
+            iTransaksiPembelian.remove(transaksiPembelian);
+            pembelianTrxTable.getSelectionModel().clearSelection();
+            trxBeliPropObsList.remove(selectedItem);
+        }
+    }
+    
+    @FXML
+    private void pemasokBatalAction(ActionEvent event) {
+        pemasokTable.getSelectionModel().clearSelection();
+        displayEditPemasok(null);
+    }
+    
+    @FXML
+    private void pemasokSimpanAction(ActionEvent event) {
+        Pemasok pemasok = new Pemasok();
+        PemasokProperty property = pemasokTable.getSelectionModel().getSelectedItem();
+        if(null != property){
+            pemasok.setId(property.getId());
+        }
+        pemasok.setNama(pemasokNamaTF.getText());
+        pemasok.setAlamat(pemasokAlamatTF.getText());
+        pemasok.setEmail(pemasokEmailTF.getText());
+        pemasok.setTelp(pemasokTelponTF.getText());
+        pemasok.setStatus(pemasokStatusCheckBox.isSelected());
+        iPemasok.saveOrUpdate(pemasok);
+        pemasokTable.setItems(iPemasok.getAllProp());
+        displayEditPemasok(null);
     }
 }

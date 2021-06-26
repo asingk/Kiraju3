@@ -13,13 +13,14 @@ import kiraju.interfaces.IMetodePembayaran;
 import kiraju.model.MetodePembayaran;
 import kiraju.property.MetodePembayaranProperty;
 import kiraju.util.HibernateUtil;
-import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -27,7 +28,7 @@ import org.hibernate.criterion.Restrictions;
  */
 public class MetodePembayaranModel implements IMetodePembayaran{
     
-    private final static Logger LOGGER = Logger.getLogger(MetodePembayaranModel.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(MetodePembayaranModel.class);
 
     @Override
     public List<MetodePembayaran> getAll() {

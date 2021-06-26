@@ -43,33 +43,37 @@ Contributor(s):
   <session-factory>
     <property name="hibernate.dialect">org.hibernate.dialect.DerbyTenSevenDialect</property>
     <!--for development-->
-    <property name="hibernate.connection.driver_class">org.apache.derby.jdbc.ClientDriver</property>
-    <property name="hibernate.connection.url">jdbc:derby://localhost:1527/kiraju_lite</property>
+<!--    <property name="hibernate.connection.driver_class">org.apache.derby.jdbc.ClientDriver</property>
+    <property name="hibernate.connection.url">jdbc:derby://localhost:1527/kiraju_lite</property>-->
     <!--for production-->
-    <!--    <property name="hibernate.connection.driver_class">org.apache.derby.jdbc.EmbeddedDriver</property>
-    <property name="hibernate.connection.url">jdbc:derby:kiraju</property>-->
+    <property name="hibernate.connection.driver_class">org.apache.derby.jdbc.EmbeddedDriver</property>
+    <property name="hibernate.connection.url">jdbc:derby:kiraju_lite</property>
+    
     <property name="hibernate.connection.username">app</property>
     <property name="hibernate.connection.password">password</property>
     <property name="hibernate.show_sql">true</property>
     <property name="hibernate.query.factory_class">org.hibernate.hql.internal.ast.ASTQueryTranslatorFactory</property>
     <property name="hibernate.jdbc.batch_size">20</property>
-
-    <mapping resource="kiraju/model/Users.hbm.xml"/>
-    <mapping resource="kiraju/model/Transaksi.hbm.xml"/>
-    <mapping resource="kiraju/model/JenisMenu.hbm.xml"/>
-    <mapping resource="kiraju/model/Posisi.hbm.xml"/>
-    <mapping resource="kiraju/model/MenuItem.hbm.xml"/>
-    <mapping resource="kiraju/model/Satuan.hbm.xml"/>
-    <mapping resource="kiraju/model/Diskon.hbm.xml"/>
-    <mapping resource="kiraju/model/Pesan.hbm.xml"/>
-    <mapping resource="kiraju/model/StokOpname.hbm.xml"/>
-    <mapping resource="kiraju/model/Pelanggan.hbm.xml"/>
-    <mapping resource="kiraju/model/Pengeluaran.hbm.xml"/>
-    <mapping resource="kiraju/model/General.hbm.xml"/>
-    <mapping resource="kiraju/model/Absensi.hbm.xml"/>
-    <mapping resource="kiraju/model/StokOpnameItem.hbm.xml"/>
-    <mapping resource="kiraju/model/Pajak.hbm.xml"/>
-    <mapping resource="kiraju/model/MetodePembayaran.hbm.xml"/>
-    <mapping resource="kiraju/model/Meja.hbm.xml"/>
+    <mapping class="kiraju.model.MetodePembayaran"/>
+    <mapping class="kiraju.model.MenuItem"/>
+    <mapping class="kiraju.model.Pajak"/>
+    <mapping class="kiraju.model.Satuan"/>
+    <mapping class="kiraju.model.Pesan"/>
+    <mapping class="kiraju.model.Meja"/>
+    <mapping class="kiraju.model.StokOpnameItem"/>
+    <mapping class="kiraju.model.DaftarPembelian"/>
+    <mapping class="kiraju.model.Pelanggan"/>
+    <mapping class="kiraju.model.Posisi"/>
+    <mapping class="kiraju.model.Pengeluaran"/>
+    <mapping class="kiraju.model.Users"/>
+    <mapping class="kiraju.model.Pemasok"/>
+    <mapping class="kiraju.model.Absensi"/>
+    <mapping class="kiraju.model.Transaksi"/>
+    <mapping class="kiraju.model.JenisMenu"/>
+    <mapping class="kiraju.model.Laporan"/>
+    <mapping class="kiraju.model.TransaksiPembelian"/>
+    <mapping class="kiraju.model.Diskon"/>
+    <mapping class="kiraju.model.StokOpname"/>
+    <mapping class="kiraju.model.Umum"/>
   </session-factory>
 </hibernate-configuration>

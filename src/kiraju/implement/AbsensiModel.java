@@ -19,7 +19,6 @@ import kiraju.model.Absensi;
 import kiraju.model.Users;
 import kiraju.property.AbsensiProperty;
 import kiraju.util.HibernateUtil;
-import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -27,6 +26,8 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -34,7 +35,7 @@ import org.hibernate.criterion.Restrictions;
  */
 public class AbsensiModel implements IAbsensi{
     
-    private final static Logger LOGGER = Logger.getLogger(AbsensiModel.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(AbsensiModel.class);
 
     @Override
     public ObservableList<AbsensiProperty> getByDate(LocalDate localDate) {

@@ -22,7 +22,8 @@ import java.util.Properties;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import org.apache.derby.tools.ij;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -30,13 +31,14 @@ import org.apache.log4j.Logger;
  * @author arvita
  */
 public class JDBCConnection {
-    private final static Logger LOGGER = Logger.getLogger(JDBCConnection.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(JDBCConnection.class);
     //for development
-    private static final String DRIVER = "org.apache.derby.jdbc.ClientDriver";
-    private static final String URL = "jdbc:derby://localhost:1527/kiraju_lite";
+//    private static final String DRIVER = "org.apache.derby.jdbc.ClientDriver";
+//    private static final String URL = "jdbc:derby://localhost:1527/kiraju_lite";
     //for production
-//    private static final String DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
-//    private static final String URL = "jdbc:derby:kiraju";
+    private static final String DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
+    private static final String URL = "jdbc:derby:kiraju_lite";
+    
     private static final String SYS_BACKUP = "CALL SYSCS_UTIL.SYSCS_BACKUP_DATABASE(?)";
     private static final String USER = "app";
     private static final String PWD = "password";
@@ -67,7 +69,7 @@ public class JDBCConnection {
                 Properties properties = new Properties();
                 properties.put("user", USER);
                 properties.put("password", PWD);
-                properties.put("restoreFrom", backupDir + File.separator + "kiraju");
+                properties.put("restoreFrom", backupDir + File.separator + "kiraju_lite");
                 Connection conn = DriverManager.getConnection(URL, properties);
                 conn.close();
             } catch (ClassNotFoundException | SQLException ex) {
@@ -163,7 +165,7 @@ public class JDBCConnection {
                     final String str = errorsEncountered + " errors encountered while running the sql script";
                     throw new RuntimeException(str);
                 }
-                String sqlFirstInstallDate = "INSERT INTO APP.GENERAL (ID, INSTALL_DT, MODE_CAFE, PRINTER_CODE) VALUES (?,?,?,?)";
+                String sqlFirstInstallDate = "INSERT INTO APP.UMUM (ID, INSTALL_DT, MODE_CAFE, PRINTER_CODE) VALUES (?,?,?,?)";
                try (PreparedStatement preparedStatement = connection.prepareStatement(sqlFirstInstallDate)) {
                     preparedStatement.setDate(2, java.sql.Date.valueOf(java.time.LocalDate.now()));
 //                   preparedStatement.setDate(1, java.sql.Date.valueOf("2017-01-01"));
@@ -190,7 +192,7 @@ public class JDBCConnection {
 //            LocalDate installDate = null;
             LocalDate batasDate = null;
             try (Connection conn = DriverManager.getConnection(URL, properties)) {
-                String query = "SELECT INSTALL_DT FROM APP.GENERAL";
+                String query = "SELECT INSTALL_DT FROM APP.UMUM";
                 PreparedStatement ps = conn.prepareStatement(query);
                 try (ResultSet rs = ps.executeQuery()) {
                     while (rs.next()) {

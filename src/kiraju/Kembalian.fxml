@@ -12,7 +12,7 @@
    <top>
       <Label text="Uang Kembali:" BorderPane.alignment="CENTER">
          <font>
-            <Font size="18.0" />
+            <Font size="14.0" />
          </font>
       </Label>
    </top>
@@ -24,7 +24,7 @@
       </ButtonBar>
    </bottom>
    <center>
-      <Text fx:id="uangKembali" fill="#c50e29" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" BorderPane.alignment="CENTER">
+      <Text fx:id="uangKembali" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" BorderPane.alignment="CENTER">
          <font>
             <Font size="24.0" />
          </font>

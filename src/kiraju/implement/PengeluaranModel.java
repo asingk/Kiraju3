@@ -16,11 +16,12 @@ import kiraju.interfaces.IPengeluaran;
 import kiraju.model.Pengeluaran;
 import kiraju.property.PengeluaranProperty;
 import kiraju.util.HibernateUtil;
-import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -28,7 +29,7 @@ import org.hibernate.Transaction;
  */
 public class PengeluaranModel implements IPengeluaran {
     
-    private final static Logger logger = Logger.getLogger(PengeluaranModel.class);
+    private final static Logger logger = LoggerFactory.getLogger(PengeluaranModel.class);
 
     @Override
     public ObservableList<PengeluaranProperty> getByDate(LocalDate localDate) {

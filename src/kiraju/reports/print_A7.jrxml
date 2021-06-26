@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="print" language="groovy" pageWidth="210" pageHeight="297" columnWidth="170" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="d31a5c64-f1ea-4e14-8dcb-4341e7d62118">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="70"/>
+	<parameter name="title" class="java.lang.String"/>
+	<parameter name="subtitle" class="java.lang.String"/>
+	<parameter name="alamat1" class="java.lang.String"/>
+	<parameter name="alamat2" class="java.lang.String"/>
+	<parameter name="alamat3" class="java.lang.String"/>
+	<parameter name="waktu" class="java.util.Date"/>
+	<parameter name="meja" class="java.lang.String"/>
+	<parameter name="kasir" class="java.lang.String"/>
+	<parameter name="total" class="java.lang.String"/>
+	<field name="nama" class="java.lang.String"/>
+	<field name="hargaNumberFormat" class="java.lang.String"/>
+	<field name="jumlah" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="170" height="17" uuid="bec8973a-3c41-49b2-9e2f-89cd23b85871"/>
+				<textElement textAlignment="Center">
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{title}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="17" width="170" height="12" uuid="e0fb97cf-35af-4099-83e8-1eee3f9b3213"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{subtitle}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="29" width="170" height="12" uuid="9b820cb7-2352-4a4a-a9fa-4eb527793cd0"/>
+				<textElement textAlignment="Center">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{alamat1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="41" width="170" height="12" uuid="cfd77405-41fd-4eba-88b7-01a0c8239a51"/>
+				<textElement textAlignment="Center">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{alamat2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="53" width="170" height="12" uuid="66687f62-b191-4c97-9b14-97f694369a7c"/>
+				<textElement textAlignment="Center">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{alamat3}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="33" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="12" width="85" height="12" uuid="5e184b86-7378-41fd-b2e9-e7a751f7e7ff"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{meja}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="85" y="12" width="85" height="12" uuid="ff241045-d38a-49ec-9cd5-a6203f4982fd"/>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Kasir: "+$P{kasir}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy HH:mm">
+				<reportElement x="0" y="0" width="170" height="12" uuid="b1d5e56f-8fc4-4c5f-a3a7-7a2f56d6353e"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{waktu}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="30" width="170" height="1" uuid="b3922c31-3dab-4c9c-a35d-acb0e47ddff6"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="22" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="5" width="85" height="12" uuid="ea7e0b22-0449-4551-844e-78e0e19f47c1"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nama}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="85" y="5" width="60" height="12" uuid="d8475e87-a425-460e-83ad-a7b44c40036c"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["@"+$F{hargaNumberFormat}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="145" y="5" width="25" height="12" uuid="e1d1bf73-1e56-477d-a461-6653f6d0d7a9"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["x"+$F{jumlah}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="21" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="7" width="85" height="12" uuid="1bc24416-b509-45a3-8d18-dd385c06b930"/>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Total:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="85" y="7" width="85" height="12" uuid="d70722a9-add8-4a46-856f-034ae1c43e18"/>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{total}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="2" width="170" height="1" uuid="c809fd3d-207a-43c2-902a-f4ad471471e5"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+		</band>
+	</columnFooter>
+</jasperReport>

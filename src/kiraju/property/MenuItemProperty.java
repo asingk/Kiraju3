@@ -37,6 +37,8 @@ public class MenuItemProperty {
     private final StringProperty status = new SimpleStringProperty();
     private final IntegerProperty jenisId = new SimpleIntegerProperty();
     private final StringProperty jenisNama = new SimpleStringProperty();
+    private final BooleanProperty isDijual = new SimpleBooleanProperty();
+    private final StringProperty satuan = new SimpleStringProperty();
 
 //    public Integer getId() {
 //        return id.get();
@@ -229,5 +231,29 @@ public class MenuItemProperty {
 
     public StringProperty jenisNamaProperty() {
         return jenisNama;
+    }
+
+    public Boolean getIsDijual() {
+        return isDijual.get();
+    }
+
+    public void setIsDijual(Boolean isDijual) {
+        this.isDijual.set(isDijual);
+    }
+    
+    public BooleanProperty isDijualProperty() {
+        return isDijual;
+    }
+
+    public String getSatuan() {
+        return satuan.get();
+    }
+
+    public void setSatuan(String satuan) {
+        this.satuan.set(satuan);
+    }
+    
+    public StringProperty satuanProperty() {
+        return satuan;
     }
 }

@@ -26,6 +26,8 @@ public class Laporan {
     private Integer pajak;
     private Integer harga;
     private Integer subtotal;
+    private String banyak;
+    private int pembelian;
 
     public Date getTgl() {
         return tgl;
@@ -129,5 +131,21 @@ public class Laporan {
 
     public void setSubtotal(Integer subtotal) {
         this.subtotal = subtotal;
+    }
+
+    public String getBanyak() {
+        return banyak;
+    }
+
+    public void setBanyak(String banyak) {
+        this.banyak = banyak;
+    }
+
+    public int getPembelian() {
+        return pembelian;
+    }
+
+    public void setPembelian(int pembelian) {
+        this.pembelian = pembelian;
     }
 }

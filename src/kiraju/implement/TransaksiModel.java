@@ -29,11 +29,12 @@ import kiraju.property.PesanProperty;
 import kiraju.property.TransaksiProperty;
 import kiraju.util.CommonConstant;
 import kiraju.util.HibernateUtil;
-import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -41,7 +42,7 @@ import org.hibernate.Transaction;
  */
 public class TransaksiModel implements ITransaksi{
     
-    private final static Logger LOGGER = Logger.getLogger(TransaksiModel.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(TransaksiModel.class);
 
     @Override
     public ObservableList<PesanProperty> getbyMeja(short meja_id) {
@@ -270,10 +271,10 @@ public class TransaksiModel implements ITransaksi{
             Query query;
             Date date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
             if(!usersId.equals("")){
-                query = session.createQuery("from Transaksi t join t.mejaId m join t.userEnd u left join t.diskonId d left join t.pajakId p left join t.metodePembayaranId mb where t.endDtOnly = :endDtOnly and u.id = :userId order by t.endTimeOnly");
+                query = session.createQuery("from Transaksi t left join t.mejaId m join t.userEnd u left join t.diskonId d left join t.pajakId p left join t.metodePembayaranId mb where t.endDtOnly = :endDtOnly and u.id = :userId order by t.endTimeOnly");
                 query.setParameter("userId", usersId);
             }else{
-                query = session.createQuery("from Transaksi t join t.mejaId m join t.userEnd u left join t.diskonId d left join t.pajakId p left join t.metodePembayaranId mb where t.endDtOnly = :endDtOnly order by t.endTimeOnly");
+                query = session.createQuery("from Transaksi t left join t.mejaId m join t.userEnd u left join t.diskonId d left join t.pajakId p left join t.metodePembayaranId mb where t.endDtOnly = :endDtOnly order by t.endTimeOnly");
 //                query.setParameter("userId", null);
             }
             query.setParameter("endDtOnly", date);
@@ -290,10 +291,15 @@ public class TransaksiModel implements ITransaksi{
 //                    transaksiProperty.setNamaPemesan(transaksi.getNamaPemesan());
                     transaksiProperty.setStatusTransaksi(transaksi.getStatus());
                     transaksiProperty.setTotal(transaksi.getTotal());
-//                    Meja meja = (Meja) object[1];
-//                    transaksiProperty.setMeja(meja.getId());
-//                    String pelanggan = meja.getId() > 0 ? "Meja " + meja.getNomor() : transaksi.getNamaPemesan();
-//                    transaksiProperty.setNamaPemesan(pelanggan);
+                    String pelanggan;
+                    Meja meja = (Meja) object[1];
+                    if(null != meja){
+                        transaksiProperty.setMeja(meja.getId());
+                        pelanggan = "Meja " + meja.getNomor();
+                    }else{
+                        pelanggan = transaksi.getNamaPemesan();
+                    }                    
+                    transaksiProperty.setNamaPemesan(pelanggan);
                     if(null != diskon){
                         transaksiProperty.setDiskonNama(diskon.getNama());
                     }
@@ -390,23 +396,28 @@ public class TransaksiModel implements ITransaksi{
         Transaction tx;
         try {
             tx = session.beginTransaction();
-            String sql = "select tgl, sum(income) pemasukan, sum(outcome) pengeluaran, sum(diskon) diskon, sum(pajak) pajak, sum(modal) modal from ("
-                    + "select END_DT_ONLY tgl, sum(t.total) income, 0 outcome, sum(diskon_total) diskon, sum(pajak_total) pajak, sum(modal_total) modal "
+            String sql = "select tgl, sum(income) pemasukan, sum(outcome) pengeluaran, sum(diskon) diskon, sum(pajak) pajak, sum(modal) modal, sum(pembelian) pembelian from ("
+                    + "select END_DT_ONLY tgl, sum(t.total) income, 0 outcome, sum(diskon_total) diskon, sum(pajak_total) pajak, sum(modal_total) modal, 0 pembelian "
                     + "from APP.TRANSAKSI t "
                     + "where status = :status GROUP by END_DT_ONLY "
                     + "union all "
-                    + "SELECT DT_ONLY tgl, 0 income, sum(harga) outcome, 0 diskon, 0 pajak, 0 modal from APP.PENGELUARAN GROUP by DT_ONLY) x "
+                    + "SELECT DT_ONLY tgl, 0 income, sum(harga) outcome, 0 diskon, 0 pajak, 0 modal, 0 pembelian from APP.PENGELUARAN GROUP by DT_ONLY\n"
+                    + "union all\n"
+                    + "select date(tanggal) tgl, 0 income, 0 outcome, 0 diskon, 0 pajak, 0 modal, sum(total) pembelian from app.TRANSAKSI_PEMBELIAN "
+                    + "where status = :statusPembelian group by tanggal) x "
                     + "group by tgl having tgl between :tglDari AND :tglSampai order by tgl";
             Query query = session.createSQLQuery(sql);
             query.setDate("tglDari", dateDari);
             query.setDate("tglSampai", dateSampai);
             query.setShort("status", CommonConstant.TRANSAKSI_BAYAR);
+            query.setParameter("statusPembelian", true);
             List<Object[]> rows = query.list();
             for(Object[] row : rows){
                 Laporan laporan = new Laporan();
                 laporan.setTgl((Date) row[0]);
                 Integer pemasukan = Integer.valueOf(row[1].toString());
                 Integer pengeluaran = Integer.valueOf(row[2].toString());
+                int pembelian = Integer.parseInt(row[6].toString());
                 Integer diskon = 0;
                 if(null != row[3]){
                     diskon = Integer.valueOf(row[3].toString());
@@ -420,10 +431,11 @@ public class TransaksiModel implements ITransaksi{
                 laporan.setPengeluaran(pengeluaran);
                 laporan.setDiskon(diskon);
                 laporan.setPajak(pajak);
+                laporan.setPembelian(pembelian);
                 
 //                laporan.setModal(modal);
 //                laporan.setUntung(pemasukan-modal-pajak-pengeluaran);
-                laporan.setUntung(pemasukan-pajak-pengeluaran);   //remove modal @20171222 - kiraju3
+                laporan.setUntung(pemasukan-pajak-pengeluaran-pembelian);   //remove modal @20171222 - kiraju3
                 resultList.add(laporan);
             }
             tx.commit();
@@ -444,12 +456,11 @@ public class TransaksiModel implements ITransaksi{
         Transaction tx;
         try {
             tx = session.beginTransaction();
-            String sql = "select mi.NAMA menu_item, j.NAMA jenis_menu, x.total, x.modal, x.untung, x.tambahan, mi.HARGA_TOTAL harga, x.subtotal from "
-                    + "(SELECT p.menu_item_code, sum(p.JUMLAH) total, sum(p.modal*p.JUMLAH) modal, sum(p.untung*p.JUMLAH) untung, sum(p.tambahan*p.JUMLAH) tambahan, sum(p.harga*p.jumlah) subtotal FROM APP.PESAN p "
+            String sql = "select mi.NAMA menu_item, j.NAMA jenis_menu, x.total from "
+                    + "(SELECT p.menu_item_code, sum(p.JUMLAH) total FROM APP.PESAN p "
                     + "join APP.TRANSAKSI t on t.ID = p.TRANSAKSI_ID "
                     + "where t.status = :status and t.END_DT_ONLY between :tglDari and :tglSampai group by p.menu_item_code having sum(p.JUMLAH) > 0) x "
                     + "join app.MENU_ITEM mi on mi.code = x.menu_item_code "
-//                    + "join app.MENU m on m.ID = mi.MENU_ID "
                     + "join app.JENIS_MENU j on j.ID = mi.JENIS_MENU_ID "
                     + "order by j.ID, x.total desc";
             Query query = session.createSQLQuery(sql);
@@ -462,8 +473,8 @@ public class TransaksiModel implements ITransaksi{
                 laporan.setDaftarMenu(row[0].toString());
                 laporan.setJenisMenu(row[1].toString());
                 laporan.setJumlah(Integer.valueOf(row[2].toString()));
-                laporan.setHarga(Integer.valueOf(row[6].toString()));
-                laporan.setSubtotal(Integer.valueOf(row[7].toString()));
+//                laporan.setHarga(Integer.valueOf(row[6].toString()));
+//                laporan.setSubtotal(Integer.valueOf(row[7].toString()));
                 resultList.add(laporan);
             }
             tx.commit();
@@ -480,7 +491,7 @@ public class TransaksiModel implements ITransaksi{
         transaksi.setStatus(CommonConstant.TRANSAKSI_PESAN);
         transaksi.setDtStart(new Date());
         transaksi.setUserStart(new Users(userId));
-        transaksi.setMejaId(new Meja((short) 0));
+//        transaksi.setMejaId(new Meja((short) 0));
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction tx;
         try {
@@ -683,17 +694,22 @@ public class TransaksiModel implements ITransaksi{
         Transaction tx;
         try {
             tx = session.beginTransaction();
-            String sql = "select sum(income) pemasukan, sum(outcome) pengeluaran, sum(pajak) pajak, sum(modal) modal from ( " +
-                    "select sum(t.total) income, 0 outcome, sum(pajak_total) pajak, sum(modal_total) modal " +
+            String sql = "select sum(income) pemasukan, sum(outcome) pengeluaran, sum(pajak) pajak, sum(modal) modal, sum(pembelian) pembelian from ( " +
+                    "select sum(t.total) income, 0 outcome, sum(pajak_total) pajak, sum(modal_total) modal, 0 pembelian " +
                     "from APP.TRANSAKSI t " +
                     "where status = :status and t.END_DT_ONLY between :tglDari AND :tglSampai " +
                     "union all " +
-                    "SELECT 0 income, sum(harga) outcome, 0 pajak, 0 modal from APP.PENGELUARAN p " +
-                    "where p.DT_ONLY between :tglDari AND :tglSampai) x";
+                    "SELECT 0 income, sum(harga) outcome, 0 pajak, 0 modal, 0 pembelian from APP.PENGELUARAN p " +
+                    "where p.DT_ONLY between :tglDari AND :tglSampai " +
+                    "union all " +
+                    "select 0 income, 0 outcome, 0 pajak, 0 modal, sum(total) pembelian from app.transaksi_pembelian tp " +
+                    "where tp.STATUS = :statusPembelian and tp.tanggal between :tglDari AND :tglSampai " +
+                    ") x";
             Query query = session.createSQLQuery(sql);
             query.setDate("tglDari", dateDari);
             query.setDate("tglSampai", dateSampai);
             query.setShort("status", CommonConstant.TRANSAKSI_BAYAR);
+            query.setParameter("statusPembelian", true);
             List<Object[]> rows = query.list();
             for(Object[] row : rows){
                 Integer pemasukan = Integer.valueOf(row[0].toString());
@@ -702,13 +718,14 @@ public class TransaksiModel implements ITransaksi{
                 if(null != row[2]){
                     pajak = Integer.valueOf(row[2].toString());
                 }
-                Integer modal = Integer.valueOf(row[3].toString());
+//                Integer modal = Integer.valueOf(row[3].toString());
+                Integer pembelian = Integer.valueOf(row[4].toString());
                 laporan.setPemasukan(pemasukan);
                 laporan.setPengeluaran(pengeluaran);
                 laporan.setPajak(pajak);
                 
 //                laporan.setModal(modal);
-                laporan.setUntung(pemasukan-modal-pajak-pengeluaran);
+                laporan.setUntung(pemasukan-pembelian-pajak-pengeluaran);
             }
             tx.commit();
         } catch (HibernateException e) {
@@ -725,17 +742,22 @@ public class TransaksiModel implements ITransaksi{
         Transaction tx;
         try {
             tx = session.beginTransaction();
-            String sql = "select sum(income) pemasukan, sum(outcome) pengeluaran, sum(pajak) pajak, sum(modal) modal from ( " +
-                    "select sum(t.total) income, 0 outcome, sum(pajak_total) pajak, sum(modal_total) modal " +
+            String sql = "select sum(income) pemasukan, sum(outcome) pengeluaran, sum(pajak) pajak, sum(modal) modal, sum(pembelian) pembelian from ( " +
+                    "select sum(t.total) income, 0 outcome, sum(pajak_total) pajak, sum(modal_total) modal, 0 pembelian " +
                     "from APP.TRANSAKSI t " +
                     "where status = :status and month(t.END_DT_ONLY) = :bulan and year(t.END_DT_ONLY) = :tahun " +
                     "union all " +
-                    "SELECT 0 income, sum(harga) outcome, 0 pajak, 0 modal from APP.PENGELUARAN p " +
-                    "where month(p.DT_ONLY) = :bulan and year(p.DT_ONLY) = :tahun) x";
+                    "SELECT 0 income, sum(harga) outcome, 0 pajak, 0 modal, 0 pembelian from APP.PENGELUARAN p " +
+                    "where month(p.DT_ONLY) = :bulan and year(p.DT_ONLY) = :tahun " +
+                    "union all " +
+                    "select 0 income, 0 outcome, 0 pajak, 0 modal, sum(total) pembelian from app.transaksi_pembelian tp " +
+                    "where tp.STATUS = :statusPembelian and month(tp.tanggal) = :bulan and year(tp.tanggal) = :tahun " +
+                    ") x";
             Query query = session.createSQLQuery(sql);
             query.setParameter("bulan", yearMonth.getMonthValue());
             query.setParameter("tahun", yearMonth.getYear());
             query.setShort("status", CommonConstant.TRANSAKSI_BAYAR);
+            query.setParameter("statusPembelian", true);
             List<Object[]> rows = query.list();
             for(Object[] row : rows){
                 Integer pemasukan = Integer.valueOf(row[0].toString());
@@ -744,13 +766,14 @@ public class TransaksiModel implements ITransaksi{
                 if(null != row[2]){
                     pajak = Integer.valueOf(row[2].toString());
                 }
-                Integer modal = Integer.valueOf(row[3].toString());
+//                Integer modal = Integer.valueOf(row[3].toString());
+                Integer pembelian = Integer.valueOf(row[4].toString());
                 laporan.setPemasukan(pemasukan);
                 laporan.setPengeluaran(pengeluaran);
                 laporan.setPajak(pajak);
-                
 //                laporan.setModal(modal);
-                laporan.setUntung(pemasukan-modal-pajak-pengeluaran);
+                laporan.setUntung(pemasukan-pajak-pengeluaran-pembelian);
+                
             }
             tx.commit();
         } catch (HibernateException e) {

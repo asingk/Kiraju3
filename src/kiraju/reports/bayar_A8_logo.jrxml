@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="print" language="groovy" pageWidth="148" pageHeight="210" columnWidth="118" leftMargin="15" rightMargin="15" topMargin="10" bottomMargin="10" isIgnorePagination="true" uuid="d31a5c64-f1ea-4e14-8dcb-4341e7d62118">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="120"/>
+	<parameter name="title" class="java.lang.String"/>
+	<parameter name="subtitle" class="java.lang.String"/>
+	<parameter name="alamat1" class="java.lang.String"/>
+	<parameter name="alamat2" class="java.lang.String"/>
+	<parameter name="alamat3" class="java.lang.String"/>
+	<parameter name="waktu" class="java.util.Date"/>
+	<parameter name="meja" class="java.lang.String"/>
+	<parameter name="kasir" class="java.lang.String"/>
+	<parameter name="total" class="java.lang.Integer"/>
+	<parameter name="tunai" class="java.lang.Integer"/>
+	<parameter name="kembali" class="java.lang.Integer"/>
+	<parameter name="syukran1" class="java.lang.String"/>
+	<parameter name="syukran2" class="java.lang.String"/>
+	<parameter name="logoImage" class="java.awt.Image"/>
+	<parameter name="diskonNama" class="java.lang.String"/>
+	<parameter name="diskonTotal" class="java.lang.Integer"/>
+	<parameter name="pajakNama" class="java.lang.String"/>
+	<parameter name="pajakTotal" class="java.lang.Integer"/>
+	<field name="nama" class="java.lang.String"/>
+	<field name="hargaNumberFormat" class="java.lang.String"/>
+	<field name="jumlahNumberFormat" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="74" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="54" width="118" height="8" uuid="9b820cb7-2352-4a4a-a9fa-4eb527793cd0"/>
+				<textElement textAlignment="Center">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{alamat1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="62" width="118" height="8" uuid="cfd77405-41fd-4eba-88b7-01a0c8239a51"/>
+				<textElement textAlignment="Center">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{alamat2}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="34" y="0" width="50" height="50" uuid="f9836dfc-f470-4eb7-b09e-5fd055696350"/>
+				<imageExpression><![CDATA[$P{logoImage}]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="25" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="9" width="59" height="9" uuid="5e184b86-7378-41fd-b2e9-e7a751f7e7ff"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{meja}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="59" y="9" width="59" height="9" uuid="ff241045-d38a-49ec-9cd5-a6203f4982fd"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Kasir: "+$P{kasir}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy HH:mm">
+				<reportElement x="0" y="0" width="118" height="9" uuid="b1d5e56f-8fc4-4c5f-a3a7-7a2f56d6353e"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{waktu}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="23" width="118" height="1" uuid="b3922c31-3dab-4c9c-a35d-acb0e47ddff6"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="9" splitType="Stretch">
+			<textField isStretchWithOverflow="true">
+				<reportElement x="0" y="0" width="60" height="9" isPrintWhenDetailOverflows="true" uuid="ea7e0b22-0449-4551-844e-78e0e19f47c1"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nama}]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement stretchType="RelativeToTallestObject" x="78" y="0" width="40" height="9" uuid="d8475e87-a425-460e-83ad-a7b44c40036c"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["@"+$F{hargaNumberFormat}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement stretchType="RelativeToTallestObject" x="60" y="0" width="18" height="9" uuid="e1d1bf73-1e56-477d-a461-6653f6d0d7a9"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{jumlahNumberFormat}+"x"]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="32" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="1" width="118" height="1" uuid="c809fd3d-207a-43c2-902a-f4ad471471e5"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+			<textField pattern="#,##0;-#,##0" isBlankWhenNull="true">
+				<reportElement x="78" y="17" width="40" height="9" isRemoveLineWhenBlank="true" uuid="ee4ac6de-5cc3-4493-98c8-e14ef4749d63"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pajakTotal}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0;-#,##0" isBlankWhenNull="true">
+				<reportElement x="78" y="8" width="40" height="9" isRemoveLineWhenBlank="true" uuid="66e58273-67f9-446a-9a2e-5ab072350a89"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{diskonTotal}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="0" y="8" width="78" height="9" isRemoveLineWhenBlank="true" uuid="02edc822-2f3e-473b-a427-974d394cc5a5"/>
+				<textElement textAlignment="Left">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{diskonNama}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="0" y="17" width="78" height="9" isRemoveLineWhenBlank="true" uuid="dfe67a09-1bab-49b2-baf0-f559ebf74782"/>
+				<textElement textAlignment="Left">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pajakNama}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="59">
+			<textField>
+				<reportElement x="0" y="39" width="118" height="8" uuid="95832dc9-7a7e-49af-83cb-01a9b4eb281c"/>
+				<textElement textAlignment="Center">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{syukran1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="48" width="118" height="8" uuid="d67f2b23-e12f-465f-b37f-d4596d9af6ef"/>
+				<textElement textAlignment="Center">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{syukran2}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="20" width="39" height="9" uuid="5c194459-1652-435f-b5f9-f983768fc6e1"/>
+				<textElement textAlignment="Right">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Kembali:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="2" width="39" height="9" uuid="1bc24416-b509-45a3-8d18-dd385c06b930"/>
+				<textElement textAlignment="Right">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Total:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="#,##0;-#,##0">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="60" y="11" width="58" height="9" uuid="637cebdc-0d42-4716-849d-2d6d108e4319"/>
+				<textElement textAlignment="Right">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{tunai}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0;-#,##0">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="60" y="20" width="58" height="9" uuid="ee18191b-1a8d-4a09-bc3b-f14d7dec8ff1"/>
+				<textElement textAlignment="Right">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{kembali}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="11" width="39" height="9" uuid="6357bcdd-b56f-494c-af72-acceb3c999c3"/>
+				<textElement textAlignment="Right">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Tunai:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="#,##0;-#,##0">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="60" y="2" width="58" height="9" uuid="31bcd271-c956-4428-b57c-81f8d5cd5e33"/>
+				<textElement textAlignment="Right">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{total}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="49" y="2" width="11" height="9" uuid="2b9725ee-8a23-44b0-a0e0-ea9434b2fb07"/>
+				<textElement>
+					<font size="7" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Rp]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="49" y="11" width="11" height="9" uuid="fb527952-9e83-4df7-a61b-d7a3296760e7"/>
+				<textElement>
+					<font size="7" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Rp]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="49" y="20" width="11" height="9" uuid="9ef3837d-e1f7-41c9-968c-5886223c735e"/>
+				<textElement>
+					<font size="7" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Rp]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+</jasperReport>

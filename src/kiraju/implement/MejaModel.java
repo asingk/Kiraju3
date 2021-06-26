@@ -16,7 +16,6 @@ import kiraju.model.Meja;
 import kiraju.property.MejaProperty;
 import kiraju.util.CommonConstant;
 import kiraju.util.HibernateUtil;
-import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -25,6 +24,8 @@ import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.exception.ConstraintViolationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -32,7 +33,7 @@ import org.hibernate.exception.ConstraintViolationException;
  */
 public class MejaModel implements IMeja{
     
-    private final static Logger logger = Logger.getLogger(MejaModel.class);
+    private final static Logger logger = LoggerFactory.getLogger(MejaModel.class);
 
     @Override
     public List<Meja> getAll() {

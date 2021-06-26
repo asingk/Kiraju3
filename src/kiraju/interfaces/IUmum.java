@@ -5,13 +5,13 @@
  */
 package kiraju.interfaces;
 
-import kiraju.model.General;
+import kiraju.model.Umum;
 
 /**
  *
  * @author arvita
  */
-public interface IGeneral {
-    General getGeneral();
-    void update(General general);
+public interface IUmum {
+    Umum getUmum();
+    void update(Umum umum);
 }
