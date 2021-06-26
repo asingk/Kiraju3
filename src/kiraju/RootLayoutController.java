@@ -39,7 +39,8 @@ import kiraju.model.Posisi;
 import kiraju.model.Users;
 import kiraju.util.CommonConstant;
 import kiraju.util.JDBCConnection;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -47,7 +48,7 @@ import org.apache.log4j.Logger;
  */
 public class RootLayoutController extends AdminController implements Initializable {
     
-    private final static Logger LOGGER = Logger.getLogger(RootLayoutController.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(RootLayoutController.class);
     
     @FXML
     private Text namaUser;

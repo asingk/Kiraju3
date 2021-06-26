@@ -12,12 +12,13 @@ import kiraju.interfaces.IPosisi;
 import kiraju.model.Posisi;
 import kiraju.property.PosisiProperty;
 import kiraju.util.HibernateUtil;
-import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -25,7 +26,7 @@ import org.hibernate.criterion.Restrictions;
  */
 public class PosisiModel implements IPosisi {
     
-    private final static Logger LOGGER = Logger.getLogger(PosisiModel.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(PosisiModel.class);
 
     @Override
     public ObservableList<PosisiProperty> getAll() {

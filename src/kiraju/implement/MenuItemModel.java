@@ -23,7 +23,6 @@ import kiraju.property.MenuItemProperty;
 import kiraju.property.PesanProperty;
 import kiraju.property.StokOpnameItemProperty;
 import kiraju.util.HibernateUtil;
-import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.JDBCException;
@@ -33,6 +32,8 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.exception.ConstraintViolationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -40,7 +41,7 @@ import org.hibernate.exception.ConstraintViolationException;
  */
 public class MenuItemModel implements IMenuItem{
     
-    private final static Logger LOGGER = Logger.getLogger(MenuItemModel.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(MenuItemModel.class);
 
     @Override
     public MenuItem getById(int id) {

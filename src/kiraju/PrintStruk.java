@@ -27,6 +27,8 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.util.JRLoader;
 import kiraju.interfaces.IUmum;
 import kiraju.model.Umum;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -34,7 +36,7 @@ import kiraju.model.Umum;
  */
 public class PrintStruk implements Runnable{
     
-    private final static org.apache.log4j.Logger LOGGER = org.apache.log4j.Logger.getLogger(PrintStruk.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(PrintStruk.class);
 //    private final NumberFormat numberFormat = NumberFormat.getInstance(new Locale("id", "ID"));
     private int tunai = 0;
     private Users user = new Users();

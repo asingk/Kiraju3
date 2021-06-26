@@ -16,14 +16,15 @@ import javafx.stage.Stage;
 import kiraju.model.Users;
 import kiraju.util.HibernateUtil;
 import kiraju.util.JDBCConnection;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author arvita
  */
 public class Kiraju extends Application {
-    private final static Logger LOGGER = Logger.getLogger(Kiraju.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(Kiraju.class);
     
     private Stage stage;
     private BorderPane root;

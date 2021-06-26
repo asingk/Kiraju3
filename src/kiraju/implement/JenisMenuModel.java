@@ -16,7 +16,6 @@ import kiraju.model.JenisMenu;
 import kiraju.property.JenisMenuProperty;
 import kiraju.util.Choice;
 import kiraju.util.HibernateUtil;
-import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.JDBCException;
@@ -26,13 +25,15 @@ import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.exception.ConstraintViolationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author arvita
  */
 public class JenisMenuModel implements IJenisMenu{
-    private final static Logger LOGGER = Logger.getLogger(JenisMenuModel.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(JenisMenuModel.class);
 
     @Override
     public List<JenisMenu> getAll() {

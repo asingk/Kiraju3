@@ -13,13 +13,14 @@ import kiraju.model.Pajak;
 import kiraju.property.DiskonPajakProperty;
 import kiraju.util.Choice;
 import kiraju.util.HibernateUtil;
-import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -27,7 +28,7 @@ import org.hibernate.criterion.Restrictions;
  */
 public class PajakModel implements IPajak{
     
-    private final static Logger LOGGER = Logger.getLogger(PajakModel.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(PajakModel.class);
 
     @Override
     public ObservableList<DiskonPajakProperty> getAllProperty() {

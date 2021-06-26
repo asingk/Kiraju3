@@ -14,7 +14,6 @@ import kiraju.model.Pemasok;
 import kiraju.property.PemasokProperty;
 import kiraju.util.Choice;
 import kiraju.util.HibernateUtil;
-import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -22,6 +21,8 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -29,7 +30,7 @@ import org.hibernate.criterion.Restrictions;
  */
 public class PemasokModel implements IPemasok{
     
-    private final static Logger LOGGER = Logger.getLogger(PemasokModel.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(PemasokModel.class);
 
     @Override
     public ObservableList<PemasokProperty> getAllProp() {

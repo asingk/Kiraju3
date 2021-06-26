@@ -12,11 +12,12 @@ import javafx.collections.ObservableList;
 import kiraju.interfaces.ISatuan;
 import kiraju.model.Satuan;
 import kiraju.util.HibernateUtil;
-import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -24,7 +25,7 @@ import org.hibernate.Transaction;
  */
 public class SatuanModel implements ISatuan{
     
-    private final static Logger LOGGER = Logger.getLogger(SatuanModel.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(SatuanModel.class);
 
     @Override
     public ObservableList<String> getCodeListProp() {

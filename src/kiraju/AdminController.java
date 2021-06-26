@@ -176,17 +176,18 @@ import kiraju.util.Validation;
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.util.JRLoader;
-import org.apache.log4j.Logger;
 import org.controlsfx.control.textfield.AutoCompletionBinding;
 import org.controlsfx.control.textfield.TextFields;
 import kiraju.interfaces.IUmum;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author arvita
  */
 public class AdminController implements Initializable {
-    private final static Logger LOGGER = Logger.getLogger(AdminController.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(AdminController.class);
 //    @FXML
 //    private TableView<MenuProperty> menuTable;
     @FXML

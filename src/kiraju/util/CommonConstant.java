@@ -40,24 +40,24 @@ public class CommonConstant {
     public static final int BULAN_DESEMBER = 12;
     
     //free version
-//    public static final String KEDAI_NAMA = "Kiraju";
-//    public static final String KEDAI_SUB_NAMA = "";
-//    public static final String KEDAI_ALAMAT1 = "Anda Butuh Program Kasir?";
-//    public static final String KEDAI_ALAMAT2 = "Hubungi marketing@kiraju.com";
-//    public static final String KEDAI_ALAMAT3 = "";
-//    public static final String KEDAI_SYUKRAN_1 = "Info Lebih Lanjut";
-//    public static final String KEDAI_SYUKRAN_2 = "Kunjungi www.kiraju.com";
+    public static final String KEDAI_NAMA = "Kiraju";
+    public static final String KEDAI_SUB_NAMA = "";
+    public static final String KEDAI_ALAMAT1 = "Anda Butuh Aplikasi Kasir Berkualitas?";
+    public static final String KEDAI_ALAMAT2 = "Hubungi 08128811842";
+    public static final String KEDAI_ALAMAT3 = "";
+    public static final String KEDAI_SYUKRAN_1 = "";
+    public static final String KEDAI_SYUKRAN_2 = "";
     
     //premium version
-    public static final String KEDAI_NAMA = "A.R.B Coffe Shop";
-    public static final String KEDAI_SUB_NAMA = "Pizza & Pasta";
-    public static final String KEDAI_ALAMAT1 = "Jl. Lebe Kader Reje Bukit, Sp. IV";
-    public static final String KEDAI_ALAMAT2 = "Bebesen, Aceh Tengah";
-    public static final String KEDAI_ALAMAT3 = "";
-    public static final String KEDAI_SYUKRAN_1 = "Terima Kasih";
-    public static final String KEDAI_SYUKRAN_2 = "===Powered by Kiraju===";
+//    public static final String KEDAI_NAMA = "A.R.B Coffe Shop";
+//    public static final String KEDAI_SUB_NAMA = "Pizza & Pasta";
+//    public static final String KEDAI_ALAMAT1 = "Jl. Lebe Kader Reje Bukit, Sp. IV";
+//    public static final String KEDAI_ALAMAT2 = "Bebesen, Aceh Tengah";
+//    public static final String KEDAI_ALAMAT3 = "";
+//    public static final String KEDAI_SYUKRAN_1 = "Terima Kasih";
+//    public static final String KEDAI_SYUKRAN_2 = "===Powered by Kiraju===";
     
-    public static final String LOGO_KEDAI = "img/arb-coffee.jpeg";
+    public static final String LOGO_KEDAI = "img/logo_kedai.png";
     
     public static final String ADMIN_MEJA_ACTIVE = "Aktif";
     public static final String ADMIN_MEJA_NON_ACTIVE = "Tidak Aktif";

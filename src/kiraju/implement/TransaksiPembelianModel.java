@@ -18,11 +18,12 @@ import kiraju.model.Pemasok;
 import kiraju.model.TransaksiPembelian;
 import kiraju.property.TransaksiPembelianProperty;
 import kiraju.util.HibernateUtil;
-import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -30,7 +31,7 @@ import org.hibernate.Transaction;
  */
 public class TransaksiPembelianModel implements ITransaksiPembelian{
     
-    private final static Logger LOGGER = Logger.getLogger(TransaksiPembelianModel.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(TransaksiPembelianModel.class);
 
     @Override
     public ObservableList<TransaksiPembelianProperty> getAllProp(int bulan) {

@@ -7,7 +7,6 @@ package kiraju.implement;
 
 import java.util.List;
 import kiraju.util.HibernateUtil;
-import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -15,6 +14,8 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import kiraju.interfaces.IUmum;
 import kiraju.model.Umum;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -22,7 +23,7 @@ import kiraju.model.Umum;
  */
 public class UmumModel implements IUmum{
     
-    private final static Logger LOGGER = Logger.getLogger(UmumModel.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(UmumModel.class);
 
     @Override
     public Umum getUmum() {

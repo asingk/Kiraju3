@@ -13,13 +13,14 @@ import kiraju.interfaces.IPelanggan;
 import kiraju.model.Pelanggan;
 import kiraju.property.PelangganProperty;
 import kiraju.util.HibernateUtil;
-import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -27,7 +28,7 @@ import org.hibernate.criterion.Order;
  */
 public class PelangganModel implements IPelanggan{
     
-    private final static Logger LOGGER = Logger.getLogger(PelangganModel.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(PelangganModel.class);
 
     @Override
     public ObservableList<PelangganProperty> getAllProp() {

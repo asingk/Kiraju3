@@ -29,11 +29,12 @@ import kiraju.property.PesanProperty;
 import kiraju.property.TransaksiProperty;
 import kiraju.util.CommonConstant;
 import kiraju.util.HibernateUtil;
-import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -41,7 +42,7 @@ import org.hibernate.Transaction;
  */
 public class TransaksiModel implements ITransaksi{
     
-    private final static Logger LOGGER = Logger.getLogger(TransaksiModel.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(TransaksiModel.class);
 
     @Override
     public ObservableList<PesanProperty> getbyMeja(short meja_id) {

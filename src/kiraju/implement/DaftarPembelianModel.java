@@ -15,7 +15,6 @@ import kiraju.model.MenuItem;
 import kiraju.model.TransaksiPembelian;
 import kiraju.property.DaftarPembelianProperty;
 import kiraju.util.HibernateUtil;
-import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -23,6 +22,8 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -30,7 +31,7 @@ import org.hibernate.criterion.Restrictions;
  */
 public class DaftarPembelianModel implements IDaftarPembelian{
     
-    private final static Logger LOGGER = Logger.getLogger(DaftarPembelianModel.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(DaftarPembelianModel.class);
     private final IMenuItem iMenuItem = new MenuItemModel();
 
     @Override
